@@ -9,15 +9,31 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = ""
 }
 
-model Product {
-  id       String @id
-  name     String
-  price    Float
-  quantity Int
+model User {
+  id              String            @id @default(uuid()) @db.Uuid
+  email           Int               @unique
+  fullName        String            @map("full_name")
+  cpf             String            @unique
+  phone           String
+  photo           String?
+  role            String
+  password        String
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  createdBy       String            @map("created_by")
+  CustomerProfile CustomerProfile?
 
-  @@map("products")
+  @@map("users")
+}
+
+model CustomerProfile {
+  userId  String @id @db.Uuid @map("user_id")
+  user    User   @relation(fields: [userId], references: [id])
+
+  address String
+  city    String
 }
