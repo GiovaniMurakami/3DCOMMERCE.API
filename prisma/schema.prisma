@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id              String            @id @default(uuid()) @db.Uuid
+  id              String            @id @db.Uuid
   email           Int               @unique
   fullName        String            @map("full_name")
   cpf             String            @unique
@@ -36,4 +36,29 @@ model CustomerProfile {
 
   address String
   city    String
+
+  @@map("customer_profile")
+}
+
+model Product {
+  id         String @id @db.Uuid
+  name       String
+  price      Decimal @db.Decimal(10, 2)
+
+  @@map("products")
+}
+
+model ShoppingCart {
+  id              String            @id @db.Uuid
+  userId
+  status
+
+}
+
+model ShoppingCartItem {
+  shoppingCartId
+}
+
+model Order {
+  shoppingCartId
 }
