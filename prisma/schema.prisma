@@ -20,7 +20,7 @@ model User {
   cpf             String           @unique @db.VarChar(40)
   phone           String           @db.VarChar(20)
   photo           String?
-  role            String           @db.VarChar(20)
+  role            Role           
   password        String           @db.VarChar(255)
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @updatedAt @map("updated_at")
@@ -54,7 +54,7 @@ model Product {
   fileUrl          String           @map("file_url")
   createdAt        DateTime         @default(now()) @map("created_at")
   updatedAt        DateTime         @updatedAt @map("updated_at")
-  createdBy        String           @map("created_by")
+  createdBy        String           @map("created_by") @db.Uuid
   user             User             @relation(fields: [createdBy], references: [id])
 
   shoppingCartItem ShoppingCartItem[]
@@ -94,12 +94,15 @@ model ShoppingCartItem {
 
 model Order {
   id         String      @id @db.Uuid
-  status     String      @db.VarChar(40)
-  orderItem  OrderItem[]
-  totalPrice Decimal     @db.Decimal(10, 2)
+  currentStatus OrderStatus
+  totalPrice Decimal     @map("total_price") @db.Decimal(10, 2)
   userId     String      @unique @map("user_id") @db.Uuid
   user       User        @relation(fields: [userId], references: [id])
   address    String
+  createdAt  DateTime    @default(now()) @map("created_at")
+
+  orderItem  OrderItem[]
+  orderStatusHistory OrderStatusHistory[]
 
   @@map("orders")
 }
@@ -113,4 +116,32 @@ model OrderItem {
   order     Order   @relation(fields: [orderId], references: [id])
 
   @@map("order_items")
+}
+
+model OrderStatusHistory {
+  id        String      @id @db.Uuid
+  orderId   String  @map("order_id") @db.Uuid
+  order     Order   @relation(fields: [orderId], references: [id])
+  status    OrderStatus
+  statusTransitionDate DateTime @default(now()) @map("created_at")
+
+  @@map("order_status_history")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+  MASTER
+}
+
+enum OrderStatus {
+  PAYMENT_PENDING
+  CANCELED
+  PAID
+  PRINTING
+  SHIPPED
+  DELIVERED
+  RETURN_REQUESTED
+  RETURN_APPROVED
+  RETURNED
 }
