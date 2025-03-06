@@ -1,0 +1,51 @@
+model Order {
+  id            String      @id @db.Uuid
+  currentStatus OrderStatus @map("current_status")
+  totalPrice    Decimal     @map("total_price") @db.Decimal(10, 2)
+  userId        String      @unique @map("user_id") @db.Uuid
+  user          User        @relation(fields: [userId], references: [id])
+  address       String
+  createdAt     DateTime    @default(now()) @map("created_at")
+
+  orderItem          OrderItem[]
+  orderStatusHistory OrderStatusHistory[]
+
+  @@index([userId, currentStatus])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @db.Uuid
+  price     Decimal @db.Decimal(10, 2)
+  quantity  Int
+  productId String  @map("product_id") @db.Uuid
+  product   Product @relation(fields: [productId], references: [id])
+  orderId   String  @map("order_id") @db.Uuid
+  order     Order   @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+model OrderStatusHistory {
+  id                   String      @id @db.Uuid
+  orderId              String      @map("order_id") @db.Uuid
+  order                Order       @relation(fields: [orderId], references: [id])
+  status               OrderStatus
+  statusTransitionDate DateTime    @default(now()) @map("status_transition_date")
+
+  @@index([orderId, statusTransitionDate(sort: Desc)])
+  @@map("order_status_history")
+}
+
+enum OrderStatus {
+  PAYMENT_PENDING
+  CANCELED
+  PAID
+  PRINTING
+  SHIPPED
+  DELIVERED
+  RETURN_REQUESTED
+  RETURN_APPROVED
+  RETURNED
+}
