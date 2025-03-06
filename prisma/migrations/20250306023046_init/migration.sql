@@ -46,7 +46,7 @@ CREATE TABLE "products" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "created_by" UUID NOT NULL,
-    "user_id" UUID NOT NULL,
+    "category_id" UUID NOT NULL,
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
 );
@@ -62,13 +62,13 @@ CREATE TABLE "product_images" (
 );
 
 -- CreateTable
-CREATE TABLE "Category" (
+CREATE TABLE "categories" (
     "id" UUID NOT NULL,
     "name" VARCHAR(60) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -130,16 +130,13 @@ CREATE INDEX "order_items_order_id_idx" ON "order_items"("order_id");
 CREATE INDEX "order_status_history_order_id_status_transition_date_idx" ON "order_status_history"("order_id", "status_transition_date" DESC);
 
 -- CreateIndex
-CREATE UNIQUE INDEX "products_user_id_key" ON "products"("user_id");
-
--- CreateIndex
-CREATE INDEX "products_name_user_id_idx" ON "products"("name", "user_id");
+CREATE INDEX "products_name_category_id_idx" ON "products"("name", "category_id");
 
 -- CreateIndex
 CREATE INDEX "product_images_product_id_idx" ON "product_images"("product_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
+CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "shopping_carts_user_id_key" ON "shopping_carts"("user_id");
@@ -175,7 +172,7 @@ ALTER TABLE "order_status_history" ADD CONSTRAINT "order_status_history_order_id
 ALTER TABLE "products" ADD CONSTRAINT "products_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "products" ADD CONSTRAINT "products_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "product_images" ADD CONSTRAINT "product_images_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

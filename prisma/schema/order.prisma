@@ -35,7 +35,7 @@ model OrderStatusHistory {
   statusTransitionDate DateTime    @default(now()) @map("status_transition_date")
 
   @@index([orderId, statusTransitionDate(sort: Desc)])
-  @@map("order_status_history")
+  @@map("order_status_histories")
 }
 
 enum OrderStatus {
