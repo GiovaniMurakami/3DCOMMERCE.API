@@ -1,11 +1,15 @@
-import * as AWS from "aws-sdk";
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+} from "@aws-sdk/client-s3";
 import { StorageGateway } from "../../domain/storage/storage.gateway";
 
 export class AWSSimpleStorageService implements StorageGateway {
-  private s3: AWS.S3;
+  private s3: S3Client;
 
   constructor() {
-    this.s3 = new AWS.S3({
+    this.s3 = new S3Client({
       region: process.env.AWS_REGION,
     });
   }
@@ -15,21 +19,23 @@ export class AWSSimpleStorageService implements StorageGateway {
     objectKey: string,
     data: Buffer
   ): Promise<void> {
-    const params = {
+    const command = new PutObjectCommand({
       Bucket: bucketName,
       Key: objectKey,
       Body: data,
-    };
+    });
 
-    await this.s3.putObject(params).promise();
+    await this.s3.send(command);
   }
 
   public async delete(bucketName: string, objectKey: string): Promise<void> {
-    const params = {
+    const command = new DeleteObjectCommand({
       Bucket: bucketName,
       Key: objectKey,
-    };
+    });
 
-    await this.s3.deleteObject(params).promise();
+    await this.s3.send(command);
   }
 }
+
+export default AWSSimpleStorageService;
