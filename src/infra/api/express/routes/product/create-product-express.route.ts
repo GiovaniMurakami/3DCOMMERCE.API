@@ -5,7 +5,7 @@ import {
 } from "../../../../../usecases/create-product/create-product.usecase";
 import { HttpMethod, Route } from "../route";
 
-export type CreateProductResponseDto = {
+export type CreateProductOutputDto = {
   id: string;
 };
 
@@ -26,14 +26,9 @@ export class CreateProductRoute implements Route {
 
   public getHandler() {
     return async (request: Request, response: Response) => {
-      const { name, price } = request.body;
+      const input: CreateProductInputDto = request.body;
 
-      const input: CreateProductInputDto = {
-        name,
-        price,
-      };
-
-      const output: CreateProductResponseDto =
+      const output: CreateProductOutputDto =
         await this.createProductService.execute(input);
 
       const responseBody = this.present(output);
@@ -50,7 +45,7 @@ export class CreateProductRoute implements Route {
     return this.method;
   }
 
-  private present(input: CreateProductResponseDto): CreateProductResponseDto {
+  private present(input: CreateProductOutputDto): CreateProductOutputDto {
     const response = { id: input.id };
     return response;
   }

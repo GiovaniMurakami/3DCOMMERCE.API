@@ -1,41 +1,53 @@
+import Decimal from "decimal.js";
 import { Product } from "../../domain/product/entity/product";
-import { ProductGateway } from "../../domain/product/gateway/product.gateway";
+import { CreateProductOutputDto } from "../../infra/api/express/routes/product/create-product-express.route";
+import { ProductRepository } from "../../infra/repositories/product/product.repository";
 import { Usecase } from "../usecase";
+import { randomUUID } from "crypto";
 
 export type CreateProductInputDto = {
   name: string;
-  price: number;
+  price: Decimal
+  categoryId: string;
+  images: CreateProductImageInputDto[];
+  model: Buffer;
 };
 
-export type CreateProductOutputDto = {
-  id: string;
-};
+export type CreateProductImageInputDto = {
+  image: Buffer;
+  type: string;
+}
 
-export class CreateProductUsecase
-  implements Usecase<CreateProductInputDto, CreateProductOutputDto>
-{
-  private constructor(private readonly productGateway: ProductGateway) {}
+export class CreateProductUsecase implements Usecase<CreateProductInputDto, CreateProductOutputDto> {
+  private constructor(private readonly productRepository: ProductRepository) {}
 
-  public static create(productGateway: ProductGateway) {
-    return new CreateProductUsecase(productGateway);
+  public static create(productRepository: ProductRepository) {
+    return new CreateProductUsecase(productRepository);
   }
 
-  public async execute({
-    name,
-    price,
-  }: CreateProductInputDto): Promise<CreateProductOutputDto> {
-    const aProduct = Product.create(name, price);
+  public async execute(createProductInputDto: CreateProductInputDto): Promise<CreateProductOutputDto> {
+    const fileUrl = "saveOnS3";
+    const imagesUrl = "forEachImageSaveOnS3";
 
-    await this.productGateway.save(aProduct);
+    const product: Product = new Product(
+      randomUUID(),
+      createProductInputDto.name,
+      createProductInputDto.price,
+      fileUrl,
+      "userUuidMock",
+      createProductInputDto.categoryId
+    )
 
-    const output = this.presentOutput(aProduct);
+    await this.productRepository.save(product);
+
+    const output = this.presentOutput(product);
 
     return output;
   }
 
   private presentOutput(product: Product): CreateProductOutputDto {
     const output: CreateProductOutputDto = {
-      id: product.id,
+      id: product.id!,
     };
 
     return output;
