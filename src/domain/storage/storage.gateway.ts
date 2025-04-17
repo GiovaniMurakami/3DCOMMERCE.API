@@ -1,4 +1,6 @@
+import { CreateProductImageInputDto } from "../../usecases/create-product/create-product.usecase";
+
 export interface StorageGateway {
-  save(resourcePath: string, resourceName: string, data: Buffer): Promise<void>;
-  delete(resourcePath: string, resourceName: string): Promise<void>;
+  saveModel(productId: string, data: Buffer): Promise<string>;
+  saveProductImages(productId: string, images: CreateProductImageInputDto[]): Promise<string[]>;
 }

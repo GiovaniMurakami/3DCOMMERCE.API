@@ -5,7 +5,6 @@ import { Category } from "./category";
 export class Product {
   public readonly createdAt?: Date;
   public updatedAt?: Date;
-  public productImages?: ProductImage[];
   public category?: Category;
 
   constructor(
@@ -15,6 +14,7 @@ export class Product {
     public fileUrl: string,
     public createdBy: string,
     public categoryId: string,
+    public productImages?: ProductImage[]
   ) {
   }
 }

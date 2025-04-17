@@ -1,4 +1,4 @@
-import { PrismaClient, } from "@prisma/client";
+import { Prisma, PrismaClient, } from "@prisma/client";
 import { Product } from "../../../domain/product/entity/product";
 
 export class ProductRepository {
@@ -19,5 +19,9 @@ export class ProductRepository {
         categoryId: product.categoryId,
       },
     });
+  }
+
+  public async runInTransaction<T>(fn: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
+    return await this.prismaClient.$transaction(fn);
   }
 }
