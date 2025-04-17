@@ -26,6 +26,9 @@ export class CreateProductRoute implements Route {
 
   public getHandler() {
     return async (request: Request, response: Response) => {
+      const test = request.body;
+      console.log("testeteste")
+      console.log(test);
       const input: CreateProductInputDto = request.body;
 
       const output: CreateProductOutputDto =

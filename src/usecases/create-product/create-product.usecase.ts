@@ -32,29 +32,38 @@ export class CreateProductUsecase implements Usecase<CreateProductInputDto, Crea
 
   public async execute(createProductInputDto: CreateProductInputDto): Promise<CreateProductOutputDto> {
     const productUuid = randomUUID();
-
-
-    const fileUrl = await this.storageGateway.saveModel(productUuid, createProductInputDto.model);
-    const imagesUrl = await this.storageGateway.saveProductImages(productUuid, createProductInputDto.images);
-
-    const productImages = imagesUrl.map((url) => new ProductImage(randomUUID(),productUuid, url, productUuid));
+    let fileUrl: string;
+    let imagesUrl: string[];
+    
+    const productImages: ProductImage[] = createProductInputDto.images.map(
+      (img) => new ProductImage(randomUUID(), "", img.type, productUuid)
+    );
 
     const product: Product = new Product(
       productUuid,
       createProductInputDto.name,
       createProductInputDto.price,
-      fileUrl,
+      "",
       "userUuidMock",
       createProductInputDto.categoryId,
       productImages
-    )
+    );
 
-    await this.productRepository.save(product);
+    await this.productRepository.runInTransaction(async (tx) => {
+      await this.productRepository.save(product);
+
+      fileUrl = await this.storageGateway.saveModel(productUuid, createProductInputDto.model);
+      imagesUrl = await this.storageGateway.saveProductImages(productUuid, createProductInputDto.images);
+
+      productImages.forEach((img, i) => (img.url = imagesUrl[i]));
+
+      await this.productRepository.updateFileAndImagesUrls(productUuid, fileUrl, productImages);
+    });
 
     const output = this.presentOutput(product);
-
     return output;
   }
+  
 
   private presentOutput(product: Product): CreateProductOutputDto {
     const output: CreateProductOutputDto = {

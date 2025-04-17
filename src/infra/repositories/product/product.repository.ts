@@ -21,6 +21,26 @@ export class ProductRepository {
     });
   }
 
+  public async updateFileAndImagesUrls(
+    productId: string,
+    fileUrl: string,
+    productImages: { id: string; url: string; type: string }[]
+  ): Promise<void> {
+    await this.prismaClient.product.update({
+      where: { id: productId },
+      data: { fileUrl },
+    });
+
+    await this.prismaClient.productImage.createMany({
+      data: productImages.map((img) => ({
+        id: img.id,
+        url: img.url,
+        type: img.type,
+        productId,
+      })),
+    });
+  }
+
   public async runInTransaction<T>(fn: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
     return await this.prismaClient.$transaction(fn);
   }
