@@ -3,8 +3,8 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
-import { StorageGateway } from "../../domain/storage/storage.gateway";
-import { CreateProductImageInputDto } from "../../usecases/create-product/create-product.usecase";
+import { StorageGateway } from "../../../domain/storage/storage.gateway";
+import { CreateProductImageInputDto } from "../../../usecases/create-product/create-product.usecase";
 
 export class AWSSimpleStorageService implements StorageGateway {
   private s3: S3Client;
@@ -40,7 +40,7 @@ export class AWSSimpleStorageService implements StorageGateway {
 
   async saveModel(productId: string, data: Buffer): Promise<string> {
     const bucket = process.env.S3_MODEL_BUCKET!;
-    const key = `${productId}/model.glb`;
+    const key = `${productId}.stl`;
     await this.save(bucket, key, data);
     return `https://${bucket}.s3.amazonaws.com/${key}`;
   }
@@ -50,7 +50,7 @@ export class AWSSimpleStorageService implements StorageGateway {
     const urls: string[] = [];
   
     for (const [i, img] of images.entries()) {
-      const key = `${productId}/image-${i}-${img.type}`;
+      const key = `${productId}/${img.type}-${img.name}`;
       await this.save(bucket, key, img.image);
       urls.push(`https://${bucket}.s3.amazonaws.com/${key}`);
     }

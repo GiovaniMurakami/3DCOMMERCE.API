@@ -16,6 +16,7 @@ export type CreateProductInputDto = {
 };
 
 export type CreateProductImageInputDto = {
+  name: string;
   image: Buffer;
   type: string;
 }
@@ -32,6 +33,7 @@ export class CreateProductUsecase implements Usecase<CreateProductInputDto, Crea
 
   public async execute(createProductInputDto: CreateProductInputDto): Promise<CreateProductOutputDto> {
     const productUuid = randomUUID();
+    const userUuidMock = "65334411-8f49-41fe-a3d3-b8e8335af509";
     let fileUrl: string;
     let imagesUrl: string[];
     
@@ -44,7 +46,7 @@ export class CreateProductUsecase implements Usecase<CreateProductInputDto, Crea
       createProductInputDto.name,
       createProductInputDto.price,
       "",
-      "userUuidMock",
+      userUuidMock,
       createProductInputDto.categoryId,
       productImages
     );
