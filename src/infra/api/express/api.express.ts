@@ -1,6 +1,7 @@
 import { Api } from "../api";
 import express, { Express } from "express";
 import { Route } from "./routes/route";
+import multer from "multer";
 
 export class ApiExpress implements Api {
   private app: Express;
@@ -8,6 +9,8 @@ export class ApiExpress implements Api {
   private constructor(routes: Route[]) {
     this.app = express();
     this.app.use(express.json());
+    const upload = multer({ storage: multer.memoryStorage() });
+    this.app.use(upload.any());
     this.addRoutes(routes);
   }
 

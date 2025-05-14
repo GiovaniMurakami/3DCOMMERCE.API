@@ -12,13 +12,13 @@ model Product {
 
   shoppingCartItem ShoppingCartItem[]
   orderItem        OrderItem[]
-  productImages    ProductImages[]
+  productImages    ProductImage[]
 
   @@index([name, categoryId])
   @@map("products")
 }
 
-model ProductImages {
+model ProductImage {
   id        String  @id @db.Uuid
   url       String
   type      String
