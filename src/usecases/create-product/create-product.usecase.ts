@@ -9,7 +9,7 @@ import { ProductImage } from "../../domain/product/entity/product-image";
 
 export type CreateProductInputDto = {
   name: string;
-  price: Decimal
+  price: Decimal;
   categoryId: string;
   images: CreateProductImageInputDto[];
   model: Buffer;
