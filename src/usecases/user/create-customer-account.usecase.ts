@@ -4,6 +4,7 @@ import { UserRepository } from "../../infra/repositories/product/user.repository
 import { Usecase } from "../usecase";
 import { randomUUID } from "crypto";
 import { generatePasswordHash } from "../../utils/password.utils";
+import { CreateCustomerAccountOutputDto } from "../../infra/api/express/routes/user/create-customer-account-express.route";
 
 export type CreateCustomerAccountInputDto = {
   email: string;
@@ -14,10 +15,9 @@ export type CreateCustomerAccountInputDto = {
   createdAt: Date;
   updatedAt: Date;
   customerProfile: CustomerProfile;
-  createdBy?: string;
 }
 
-export class CreateCustomerAccountUseCase implements Usecase<CreateCustomerAccountInputDto, any> {
+export class CreateCustomerAccountUseCase implements Usecase<CreateCustomerAccountInputDto, CreateCustomerAccountOutputDto> {
   private constructor(
     private readonly userRepository: UserRepository,
   ) {}
@@ -26,7 +26,7 @@ export class CreateCustomerAccountUseCase implements Usecase<CreateCustomerAccou
       return new CreateCustomerAccountUseCase(userRepository);
     }
 
-  public async execute(createCustomerAccountInputDto: CreateCustomerAccountInputDto): Promise<any> {
+  public async execute(createCustomerAccountInputDto: CreateCustomerAccountInputDto) {
     const userId = randomUUID();
     const passwordHash = await generatePasswordHash(createCustomerAccountInputDto.password);
 
@@ -42,6 +42,14 @@ export class CreateCustomerAccountUseCase implements Usecase<CreateCustomerAccou
       createCustomerAccountInputDto.updatedAt,
       createCustomerAccountInputDto.customerProfile
     );
-    this.userRepository.save(userEntity);
+    await this.userRepository.save(userEntity);
+    return this.presentOutput(userEntity);
+  }
+
+  private presentOutput(user: User): CreateCustomerAccountOutputDto {
+    const output: CreateCustomerAccountOutputDto = {
+      id: user.id
+    };
+    return output;
   }
 }

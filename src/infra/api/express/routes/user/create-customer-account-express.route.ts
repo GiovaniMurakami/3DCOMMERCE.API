@@ -24,7 +24,7 @@ export class CreateCustomerAccountRoute implements Route {
   public getHandler() {
     return async (request: Request, response: Response) => {
       const output: CreateCustomerAccountOutputDto = await this.createUserService.execute(request.body);
-      const responseBody = this.present(output);
+      const responseBody = await this.present(output);
       response.status(201).json(responseBody);
     };
   }
@@ -37,8 +37,7 @@ export class CreateCustomerAccountRoute implements Route {
     return this.method;
   }
 
-  private present(input: CreateCustomerAccountOutputDto): CreateCustomerAccountOutputDto {
-    const response = { id: input.id };
-    return response;
+  private present(input: CreateCustomerAccountOutputDto): any {
+    return input;
   }
 }

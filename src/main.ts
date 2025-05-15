@@ -1,5 +1,6 @@
 import { ApiExpress } from "./infra/api/express/api.express";
 import { CreateProductRoute } from "./infra/api/express/routes/product/create-product-express.route";
+import { CreateCustomerAccountRoute } from "./infra/api/express/routes/user/create-customer-account-express.route";
 import { ProductRepository } from "./infra/repositories/product/product.repository";
 import { UserRepository } from "./infra/repositories/product/user.repository";
 import AWSSimpleStorageService from "./infra/services/storage/aws-simple-storage.service";
@@ -14,9 +15,10 @@ function main() {
   const createProductUsecase = CreateProductUsecase.create(productRepository, fileStorage);
   const createCustomerAccountUseCase = CreateCustomerAccountUseCase.create(userRepository);
 
-  const createRoute = CreateProductRoute.create(createProductUsecase);
+  const createProductRoute = CreateProductRoute.create(createProductUsecase);
+  const createCustomerAccountRoute = CreateCustomerAccountRoute.create(createCustomerAccountUseCase);
 
-  const api = ApiExpress.create([createRoute]);
+  const api = ApiExpress.create([createProductRoute, createCustomerAccountRoute]);
   const port = 8000;
   api.start(port);
 }
