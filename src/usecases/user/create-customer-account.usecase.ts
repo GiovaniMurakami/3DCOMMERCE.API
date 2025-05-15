@@ -20,17 +20,23 @@ export type CreateCustomerAccountInputDto = {
 export class CreateCustomerAccountUseCase implements Usecase<CreateCustomerAccountInputDto, CreateCustomerAccountOutputDto> {
   private constructor(
     private readonly userRepository: UserRepository,
-  ) {}
+  ) { }
 
   public static create(userRepository: UserRepository) {
-      return new CreateCustomerAccountUseCase(userRepository);
-    }
+    return new CreateCustomerAccountUseCase(userRepository);
+  }
 
   public async execute(createCustomerAccountInputDto: CreateCustomerAccountInputDto) {
     const userId = randomUUID();
     const passwordHash = await generatePasswordHash(createCustomerAccountInputDto.password);
+    const customerProfile = new CustomerProfile(
+      randomUUID(),
+      userId,
+      createCustomerAccountInputDto.customerProfile.address,
+      createCustomerAccountInputDto.customerProfile.city
+    );
 
-    const userEntity: User = new User (
+    const userEntity: User = new User(
       userId,
       createCustomerAccountInputDto.email,
       createCustomerAccountInputDto.fullName,
@@ -40,7 +46,7 @@ export class CreateCustomerAccountUseCase implements Usecase<CreateCustomerAccou
       passwordHash,
       createCustomerAccountInputDto.createdAt,
       createCustomerAccountInputDto.updatedAt,
-      new CustomerProfile(randomUUID(), userId, createCustomerAccountInputDto.customerProfile.address, createCustomerAccountInputDto.customerProfile.city),
+      customerProfile
     );
     await this.userRepository.save(userEntity);
     return this.presentOutput(userEntity);
