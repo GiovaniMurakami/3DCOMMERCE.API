@@ -40,7 +40,7 @@ export class CreateCustomerAccountUseCase implements Usecase<CreateCustomerAccou
       passwordHash,
       createCustomerAccountInputDto.createdAt,
       createCustomerAccountInputDto.updatedAt,
-      createCustomerAccountInputDto.customerProfile
+      new CustomerProfile(randomUUID(), userId, createCustomerAccountInputDto.customerProfile.address, createCustomerAccountInputDto.customerProfile.city),
     );
     await this.userRepository.save(userEntity);
     return this.presentOutput(userEntity);

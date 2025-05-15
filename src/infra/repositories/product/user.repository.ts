@@ -10,6 +10,7 @@ export class UserRepository {
   }
 
   public async save(user: User) {
+    
     await this.prismaClient.user.create({
       data: {
         id: user.id,
@@ -18,6 +19,15 @@ export class UserRepository {
         cpf: user.cpf,
         phone: user.phone,
         role: user.role,
+        customerProfile: user.customerProfile
+        ? {
+            create: {
+              id: user.customerProfile.id,
+              address: user.customerProfile.address,
+              city: user.customerProfile.city
+            }
+          }
+        : undefined,
         password: user.password,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,

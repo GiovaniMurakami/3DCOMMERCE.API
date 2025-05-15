@@ -22,6 +22,6 @@ export class CustomerProfile {
     public userId: string,
     public address: string,
     public city: string,
-    public user: User
+    public user?: User
   ) {}
 }
