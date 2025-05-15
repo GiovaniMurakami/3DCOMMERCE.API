@@ -3,6 +3,7 @@ import { CustomerProfile, User } from "../../domain/product/entity/user";
 import { UserRepository } from "../../infra/repositories/product/user.repository";
 import { Usecase } from "../usecase";
 import { randomUUID } from "crypto";
+import { generatePasswordHash } from "../../utils/password.utils";
 
 export type CreateCustomerAccountInputDto = {
   email: string;
@@ -15,7 +16,7 @@ export type CreateCustomerAccountInputDto = {
   customerProfile: CustomerProfile;
   createdBy?: string;
 }
-// role and id
+
 export class CreateCustomerAccountUseCase implements Usecase<CreateCustomerAccountInputDto, any> {
   private constructor(
     private readonly userRepository: UserRepository,
@@ -26,18 +27,21 @@ export class CreateCustomerAccountUseCase implements Usecase<CreateCustomerAccou
     }
 
   public async execute(createCustomerAccountInputDto: CreateCustomerAccountInputDto): Promise<any> {
+    const userId = randomUUID();
+    const passwordHash = await generatePasswordHash(createCustomerAccountInputDto.password);
+
     const userEntity: User = new User (
-      randomUUID(),
+      userId,
       createCustomerAccountInputDto.email,
       createCustomerAccountInputDto.fullName,
       createCustomerAccountInputDto.cpf,
       createCustomerAccountInputDto.phone,
       Role.CUSTOMER,
-      createCustomerAccountInputDto.password,
+      passwordHash,
       createCustomerAccountInputDto.createdAt,
       createCustomerAccountInputDto.updatedAt,
       createCustomerAccountInputDto.customerProfile
-    )
+    );
     this.userRepository.save(userEntity);
   }
 }
