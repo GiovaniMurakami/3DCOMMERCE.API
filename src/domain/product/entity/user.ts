@@ -9,9 +9,9 @@ export class User {
     public phone: string,
     public role: Role,
     public password: string,
-    public createdAt: Date,
-    public updatedAt: Date,
-    public customerProfile: CustomerProfile,
+    public customerProfile?: CustomerProfile,
+    public createdAt?: Date,
+    public updatedAt?: Date,
     public createdBy?: string
   ) {}
 }

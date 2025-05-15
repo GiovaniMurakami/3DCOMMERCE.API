@@ -12,8 +12,6 @@ export type CreateCustomerAccountInputDto = {
   cpf: string;
   phone: string;
   password: string;
-  createdAt: Date;
-  updatedAt: Date;
   customerProfile: CustomerProfile;
 }
 
@@ -44,8 +42,6 @@ export class CreateCustomerAccountUseCase implements Usecase<CreateCustomerAccou
       createCustomerAccountInputDto.phone,
       Role.CUSTOMER,
       passwordHash,
-      createCustomerAccountInputDto.createdAt,
-      createCustomerAccountInputDto.updatedAt,
       customerProfile
     );
     await this.userRepository.save(userEntity);
