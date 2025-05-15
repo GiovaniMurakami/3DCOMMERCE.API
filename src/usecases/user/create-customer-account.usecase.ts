@@ -12,7 +12,12 @@ export type CreateCustomerAccountInputDto = {
   cpf: string;
   phone: string;
   password: string;
-  customerProfile: CustomerProfile;
+  customerProfile: CustomerProfileInputDto;
+}
+
+export type CustomerProfileInputDto = {
+  address: string;
+  city: string;
 }
 
 export class CreateCustomerAccountUseCase implements Usecase<CreateCustomerAccountInputDto, CreateCustomerAccountOutputDto> {
