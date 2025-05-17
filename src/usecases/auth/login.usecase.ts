@@ -3,6 +3,8 @@ import { CreateProductOutputDto } from "../../infra/api/express/routes/product/c
 import { Usecase } from "../usecase";
 import { UserRepository } from "../../infra/repositories/product/user.repository";
 import { TokenGateway } from "../../domain/auth/token.gateway";
+import { comparePassword } from "../../utils/password.utils";
+import { LoginOutputDto } from "../../infra/api/express/routes/auth/login.route";
 
 export type LoginInputDto = {
   email: string;
@@ -19,10 +21,10 @@ export class LoginUseCase implements Usecase<any, any> {
     return new LoginUseCase(userRepository, tokenService);
   }
 
-  public async execute(loginInputDto: LoginInputDto): Promise<any> {
+  public async execute(loginInputDto: LoginInputDto): Promise<LoginOutputDto> {
     const user = await this.userRepository.findByEmail(loginInputDto.email);
 
-    if (!user || !(await user.comparePassword(loginInputDto.password))) {
+    if (!user || !(await comparePassword(loginInputDto.password, user.password))) {
       throw new Error("Invalid credentials");
     }
 
@@ -32,14 +34,5 @@ export class LoginUseCase implements Usecase<any, any> {
     });
 
     return { accessToken: token };
-  }
-  
-
-  private presentOutput(product: Product): CreateProductOutputDto {
-    const output: CreateProductOutputDto = {
-      id: product.id!,
-    };
-
-    return output;
   }
 }

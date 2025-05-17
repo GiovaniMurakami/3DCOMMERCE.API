@@ -3,6 +3,10 @@ import { HttpMethod, Route } from "../route";
 import { validationErrorHandler } from "../../middlewares/validation-error-handler.middleware";
 import { LoginInputDto } from "../../../../../usecases/auth/login.usecase";
 
+export interface LoginOutputDto {
+  accessToken: string;
+}
+
 export class LoginRoute implements Route {
   private constructor(
     private readonly path: string,

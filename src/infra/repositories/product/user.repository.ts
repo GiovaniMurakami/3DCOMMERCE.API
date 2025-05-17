@@ -1,6 +1,5 @@
-import { Prisma, PrismaClient } from "@prisma/client";
-import { User } from "../../../domain/product/entity/user";
-
+import { PrismaClient } from "@prisma/client";
+import { CustomerProfile, User } from "../../../domain/product/entity/user";
 
 export class UserRepository {
   private constructor(private readonly prismaClient: PrismaClient) {}
@@ -10,7 +9,6 @@ export class UserRepository {
   }
 
   public async save(user: User) {
-    
     await this.prismaClient.user.create({
       data: {
         id: user.id,
@@ -34,5 +32,36 @@ export class UserRepository {
         createdBy: user.createdBy
       }
     });
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    const user = await this.prismaClient.user.findUnique({
+      where: { email },
+      include: {
+        customerProfile: true,
+      },
+    });
+
+    if (!user) return null;
+
+    const customerProfile = user.customerProfile
+      ? new CustomerProfile(
+          user.customerProfile.id,
+          user.customerProfile.userId,
+          user.customerProfile.address,
+          user.customerProfile.city
+        )
+      : undefined;
+
+    return new User(
+      user.id,
+      user.email,
+      user.fullName,
+      user.cpf,
+      user.phone,
+      user.role,
+      user.password,
+      customerProfile
+    );
   }
 }
