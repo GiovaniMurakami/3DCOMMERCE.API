@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { HttpMethod, Route } from "../route";
 import { CreateCustomerAccountUseCase } from "../../../../../usecases/user/create-customer-account.usecase";
-
+import { createCustomerAccountValidator } from "./validation/create-customer-account.validation";
+import { validationErrorHandler } from "../middlewares/validation-error-handler";
 export type CreateCustomerAccountOutputDto = {
   id: string;
 };
@@ -22,11 +23,15 @@ export class CreateCustomerAccountRoute implements Route {
   }
 
   public getHandler() {
-    return async (request: Request, response: Response) => {
-      const output: CreateCustomerAccountOutputDto = await this.createUserService.execute(request.body);
-      const responseBody = await this.present(output);
-      response.status(201).json(responseBody);
-    };
+    return [
+      ...createCustomerAccountValidator,
+      validationErrorHandler,
+      async (request: Request, response: Response) => {
+        const output = await this.createUserService.execute(request.body);
+        const responseBody = await this.present(output);
+        response.status(201).json(responseBody);
+      },
+    ];
   }
 
   public getPath(): string {
