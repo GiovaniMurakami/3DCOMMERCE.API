@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { Product } from "../../../domain/product/entity/product";
 
 export class ProductRepository {
