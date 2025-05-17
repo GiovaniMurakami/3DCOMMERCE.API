@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { HttpMethod, Route } from "../route";
 import { validationErrorHandler } from "../../middlewares/validation-error-handler.middleware";
-import { LoginInputDto } from "../../../../../usecases/auth/authentication.usecase";
+import { LoginInputDto } from "../../../../../usecases/auth/login.usecase";
 
 export class LoginRoute implements Route {
   private constructor(

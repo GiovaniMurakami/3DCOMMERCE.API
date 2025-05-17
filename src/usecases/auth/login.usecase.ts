@@ -1,30 +1,37 @@
-import Decimal from "decimal.js";
 import { Product } from "../../domain/product/entity/product";
 import { CreateProductOutputDto } from "../../infra/api/express/routes/product/create-product-express.route";
-import { ProductRepository } from "../../infra/repositories/product/product.repository";
 import { Usecase } from "../usecase";
-import { randomUUID } from "crypto";
-import { StorageGateway } from "../../domain/storage/storage.gateway";
-import { ProductImage } from "../../domain/product/entity/product-image";
 import { UserRepository } from "../../infra/repositories/product/user.repository";
+import { TokenGateway } from "../../domain/auth/token.gateway";
 
 export type LoginInputDto = {
   email: string;
   password: string;
 }
 
-export class CreateProductUsecase implements Usecase<any, any> {
+export class LoginUseCase implements Usecase<any, any> {
   private constructor(
     private readonly userRepository: UserRepository,
-    private readonly tokenService: TokenService
+    private readonly tokenService: TokenGateway
   ) {}
 
-  public static create(userRepository: UserRepository, tokenService: TokenService) {
-    return new CreateProductUsecase(userRepository, tokenService);
+  public static create(userRepository: UserRepository, tokenService: TokenGateway) {
+    return new LoginUseCase(userRepository, tokenService);
   }
 
   public async execute(loginInputDto: LoginInputDto): Promise<any> {
-    this.tokenService.sign(loginInputDto);
+    const user = await this.userRepository.findByEmail(loginInputDto.email);
+
+    if (!user || !(await user.comparePassword(loginInputDto.password))) {
+      throw new Error("Invalid credentials");
+    }
+
+    const token = this.tokenService.sign({
+      userId: user.id,
+      role: user.role,
+    });
+
+    return { accessToken: token };
   }
   
 
