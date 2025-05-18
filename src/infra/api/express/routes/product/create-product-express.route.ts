@@ -6,6 +6,9 @@ import {
 } from "../../../../../usecases/create-product/create-product.usecase";
 import { HttpMethod, Route } from "../route";
 import Decimal from "decimal.js";
+import { authenticate } from "../../middlewares/token-authentication.middleware";
+import { authorizeRoles } from "../../middlewares/authorization.middleware";
+import { Role } from "@prisma/client";
 
 export type CreateProductOutputDto = {
   id: string;
@@ -27,23 +30,26 @@ export class CreateProductRoute implements Route {
   }
 
   public getHandler() {
-    return async (request: Request, response: Response) => {
-      const files = request.files as Express.Multer.File[];
-      const modelFile = files.find((file) => file.fieldname === "model");
-      console.log(files);
-      const images = this.mapRequestToImageInputDto(request, files);
-      const input: CreateProductInputDto = {
-        name: request.body.name,
-        price: new Decimal(request.body.price),
-        categoryId: request.body.categoryId,
-        model: modelFile?.buffer ?? Buffer.from([]),
-        images,
-      };
-  
-      const output: CreateProductOutputDto = await this.createProductService.execute(input);
-      const responseBody = this.present(output);
-      response.status(201).json(responseBody);
-    };
+    return [
+      authenticate,
+      authorizeRoles(Role.ADMIN),
+      async (request: Request, response: Response) => {
+        const files = request.files as Express.Multer.File[];
+        const modelFile = files.find((file) => file.fieldname === "model");
+        const images = this.mapRequestToImageInputDto(request, files);
+        const input: CreateProductInputDto = {
+          name: request.body.name,
+          price: new Decimal(request.body.price),
+          categoryId: request.body.categoryId,
+          model: modelFile?.buffer ?? Buffer.from([]),
+          images,
+        };
+    
+        const output: CreateProductOutputDto = await this.createProductService.execute(input);
+        const responseBody = this.present(output);
+        response.status(201).json(responseBody);
+      }
+    ]
   }
 
   public getPath(): string {

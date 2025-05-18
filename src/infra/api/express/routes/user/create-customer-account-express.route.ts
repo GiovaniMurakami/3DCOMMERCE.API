@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { HttpMethod, Route } from "../route";
 import { CreateCustomerAccountUseCase } from "../../../../../usecases/user/create-customer-account.usecase";
 import { createCustomerAccountValidator } from "./validation/create-customer-account.validation";
-import { validationErrorHandler } from "../middlewares/validation-error-handler";
+import { validationErrorHandler } from "../../middlewares/validation-error-handler.middleware";
 export type CreateCustomerAccountOutputDto = {
   id: string;
 };
