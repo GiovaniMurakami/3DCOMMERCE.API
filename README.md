@@ -15,7 +15,9 @@
 
 - S3_MODEL_BUCKET: Bucket for model file. Example: tg-3d-model
 
-- JWT_SECRET: Secret for JWT token
+- JWT_ACCESS_TOKEN_SECRET: Secret for JWT token
+
+- JWT_REFRESH_TOKEN_SECRET: Secret for JWT token
 
 ### Postman collection
 
