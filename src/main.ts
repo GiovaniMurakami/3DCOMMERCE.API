@@ -2,6 +2,7 @@ import { ApiExpress } from "./infra/api/express/api.express";
 import { LoginRoute } from "./infra/api/express/routes/auth/login.route";
 import { CreateProductRoute } from "./infra/api/express/routes/product/create-product-express.route";
 import { CreateCustomerAccountRoute } from "./infra/api/express/routes/user/create-customer-account-express.route";
+import { CreateCustomerAccountRoute } from "./infra/api/express/routes/user/create-customer-account-express.route";
 import { ProductRepository } from "./infra/repositories/product/product.repository";
 import { UserRepository } from "./infra/repositories/product/user.repository";
 import { JwtTokenService } from "./infra/services/auth/jwt-token.service";
@@ -12,6 +13,8 @@ import { CreateProductUsecase } from "./usecases/create-product/create-product.u
 import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-account.usecase";	
 
 function main() {
+  const productRepository = ProductRepository.create(prisma);
+  const userRepository = UserRepository.create(prisma);
   const productRepository = ProductRepository.create(prisma);
   const userRepository = UserRepository.create(prisma);
   const fileStorage = new AWSSimpleStorageService();
