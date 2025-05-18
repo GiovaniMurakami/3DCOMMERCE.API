@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "dc34d4fe-2cb2-405e-9aaa-ca944ffb21eb",
-		"name": "TG 3D Commerce",
+		"name": "TG_3D_Commerce",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "23766790"
 	},
@@ -130,6 +130,76 @@
 			"item": [
 				{
 					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verifica se a resposta tem status 200\r",
+									"if (pm.response.code === 200) {\r",
+									"  const response = pm.response.json();\r",
+									"\r",
+									"  if (response.accessToken) {\r",
+									"    pm.environment.set(\"accessToken\", response.accessToken);\r",
+									"    console.log(\"Access token set successfully.\");\r",
+									"  } else {\r",
+									"    console.warn(\"Access token not found in response.\");\r",
+									"  }\r",
+									"} else {\r",
+									"  console.error(\"Login failed with status:\", pm.response.code);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"teste2@gmail.com\",\r\n  \"password\": \"teste123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"login"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh token",
 					"event": [
 						{
 							"listen": "test",
