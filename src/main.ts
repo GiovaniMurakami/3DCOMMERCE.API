@@ -10,10 +10,8 @@ import { prisma } from "./package/prisma/prisma";
 import { LoginUseCase } from "./usecases/auth/login.usecase";
 import { CreateProductUsecase } from "./usecases/create-product/create-product.usecase";
 import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-account.usecase";	
-import dotenv from 'dotenv';
 
 function main() {
-  dotenv.config();
   const productRepository = ProductRepository.create(prisma);
   const userRepository = UserRepository.create(prisma);
   const fileStorage = new AWSSimpleStorageService();
