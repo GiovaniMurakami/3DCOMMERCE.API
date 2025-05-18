@@ -1,31 +1,21 @@
 import { ApiExpress } from "./infra/api/express/api.express";
-import { LoginRoute } from "./infra/api/express/routes/auth/login.route";
 import { CreateProductRoute } from "./infra/api/express/routes/product/create-product-express.route";
-import { CreateCustomerAccountRoute } from "./infra/api/express/routes/user/create-customer-account-express.route";
-import { ProductRepository } from "./infra/repositories/product/product.repository";
-import { UserRepository } from "./infra/repositories/product/user.repository";
-import { JwtTokenService } from "./infra/services/auth/jwt-token.service";
-import AWSSimpleStorageService from "./infra/services/storage/aws-simple-storage.service";
+import { ListProductRoute } from "./infra/api/express/routes/product/list-product.express.route";
+import { ProductRepositoryPrisma } from "./infra/repositories/product/product.repository.prisma";
 import { prisma } from "./package/prisma/prisma";
-import { LoginUseCase } from "./usecases/auth/login.usecase";
 import { CreateProductUsecase } from "./usecases/create-product/create-product.usecase";
-import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-account.usecase";	
+import { ListProductUsecase } from "./usecases/list-product/list-product.usecase";
 
 function main() {
-  const productRepository = ProductRepository.create(prisma);
-  const userRepository = UserRepository.create(prisma);
-  const fileStorage = new AWSSimpleStorageService();
-  const tokenService = new JwtTokenService();
+  const aRepository = ProductRepositoryPrisma.create(prisma);
 
-  const createProductUsecase = CreateProductUsecase.create(productRepository, fileStorage);
-  const createCustomerAccountUseCase = CreateCustomerAccountUseCase.create(userRepository);
-  const loginUseCase = LoginUseCase.create(userRepository, tokenService);
+  const createProductUsecase = CreateProductUsecase.create(aRepository);
+  const listProductUsecase = ListProductUsecase.create(aRepository);
 
-  const createProductRoute = CreateProductRoute.create(createProductUsecase);
-  const createCustomerAccountRoute = CreateCustomerAccountRoute.create(createCustomerAccountUseCase);
-  const loginRoute = LoginRoute.create(loginUseCase);
+  const createRoute = CreateProductRoute.create(createProductUsecase);
+  const listRoute = ListProductRoute.create(listProductUsecase);
 
-  const api = ApiExpress.create([createProductRoute, createCustomerAccountRoute, loginRoute]);
+  const api = ApiExpress.create([createRoute, listRoute]);
   const port = 8000;
   api.start(port);
 }

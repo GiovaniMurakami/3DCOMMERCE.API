@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 
 export type HttpMethod = "get" | "post";
 
@@ -7,10 +7,8 @@ export const HttpMethod = {
   POST: "post" as HttpMethod,
 } as const;
 
-export type ExpressHandler = (req: Request, res: Response, next: NextFunction) => any;
-
 export interface Route {
-  getHandler(): ExpressHandler | ExpressHandler[];
+  getHandler(): (request: Request, response: Response) => Promise<void>;
   getPath(): string;
   getMethod(): HttpMethod;
 }
