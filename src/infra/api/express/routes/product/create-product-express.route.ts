@@ -1,11 +1,16 @@
 import { Request, Response } from "express";
 import {
+  CreateProductImageInputDto,
   CreateProductInputDto,
   CreateProductUsecase,
 } from "../../../../../usecases/create-product/create-product.usecase";
 import { HttpMethod, Route } from "../route";
+import Decimal from "decimal.js";
+import { authenticate } from "../../middlewares/token-authentication.middleware";
+import { authorizeRoles } from "../../middlewares/authorization.middleware";
+import { Role } from "@prisma/client";
 
-export type CreateProductResponseDto = {
+export type CreateProductOutputDto = {
   id: string;
 };
 
@@ -25,21 +30,26 @@ export class CreateProductRoute implements Route {
   }
 
   public getHandler() {
-    return async (request: Request, response: Response) => {
-      const { name, price } = request.body;
-
-      const input: CreateProductInputDto = {
-        name,
-        price,
-      };
-
-      const output: CreateProductResponseDto =
-        await this.createProductService.execute(input);
-
-      const responseBody = this.present(output);
-
-      response.status(201).json(responseBody).send();
-    };
+    return [
+      authenticate,
+      authorizeRoles(Role.ADMIN),
+      async (request: Request, response: Response) => {
+        const files = request.files as Express.Multer.File[];
+        const modelFile = files.find((file) => file.fieldname === "model");
+        const images = this.mapRequestToImageInputDto(request, files);
+        const input: CreateProductInputDto = {
+          name: request.body.name,
+          price: new Decimal(request.body.price),
+          categoryId: request.body.categoryId,
+          model: modelFile?.buffer ?? Buffer.from([]),
+          images,
+        };
+    
+        const output: CreateProductOutputDto = await this.createProductService.execute(input);
+        const responseBody = this.present(output);
+        response.status(201).json(responseBody);
+      }
+    ]
   }
 
   public getPath(): string {
@@ -50,8 +60,32 @@ export class CreateProductRoute implements Route {
     return this.method;
   }
 
-  private present(input: CreateProductResponseDto): CreateProductResponseDto {
+  private present(input: CreateProductOutputDto): CreateProductOutputDto {
     const response = { id: input.id };
     return response;
+  }
+
+  private mapRequestToImageInputDto(
+    request: Request,
+    files: Express.Multer.File[]
+  ): CreateProductImageInputDto[] {
+    const images: CreateProductImageInputDto[] = [];
+  
+    files
+      .filter((file) => file.fieldname.startsWith("images["))
+      .forEach((file) => {
+        const match = file.fieldname.match(/images\[(\d+)\]\.image/);
+        if (match) {
+          const index = parseInt(match[1], 10);
+          const type = request.body[`images[${index}].type`];
+          images[index] = {
+            name: file.originalname,
+            image: file.buffer,
+            type,
+          };
+        }
+      });
+  
+    return images;
   }
 }
