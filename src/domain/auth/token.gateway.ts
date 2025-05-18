@@ -1,11 +1,8 @@
-import { Role } from "@prisma/client";
 import { JwtPayload } from "jsonwebtoken";
+import { TokenPayload, TokenResponse } from "../../infra/api/dto/token-response.dto";
 
 export interface TokenGateway {
-  sign(payload: TokenPayload): string;
-  verify(token: string): string | JwtPayload;
-}
-export interface TokenPayload {
-  userId: string;
-  role: Role;
+  sign(payload: TokenPayload, expirationTime: string, secret?: string): string;
+  verify(token: string, secret: string): string | JwtPayload;
+  generateTokens(payload: TokenPayload): TokenResponse;
 }

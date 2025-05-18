@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { TokenPayload } from "../../../../domain/auth/token.gateway";
 import { JwtTokenService } from "../../../services/auth/jwt-token.service";
+import { TokenPayload } from "../../dto/token-response.dto";
 
 export interface AuthenticatedRequest extends Request {
   tokenPayload?: TokenPayload;

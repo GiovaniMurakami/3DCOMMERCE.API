@@ -1,3 +1,4 @@
+import { S3_BUCKETS } from "./config/storage";
 import { ApiExpress } from "./infra/api/express/api.express";
 import { LoginRoute } from "./infra/api/express/routes/auth/login.route";
 import { CreateProductRoute } from "./infra/api/express/routes/product/create-product-express.route";
@@ -10,7 +11,10 @@ import { prisma } from "./package/prisma/prisma";
 import { LoginUseCase } from "./usecases/auth/login.usecase";
 import { CreateProductUsecase } from "./usecases/create-product/create-product.usecase";
 import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-account.usecase";	
+import dotenv from 'dotenv';
+
 function main() {
+  dotenv.config();
   const productRepository = ProductRepository.create(prisma);
   const userRepository = UserRepository.create(prisma);
   const fileStorage = new AWSSimpleStorageService();
