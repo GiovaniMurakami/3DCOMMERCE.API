@@ -1,4 +1,3 @@
-import { S3_BUCKETS } from "./config/storage";
 import { ApiExpress } from "./infra/api/express/api.express";
 import { LoginRoute } from "./infra/api/express/routes/auth/login.route";
 import { CreateProductRoute } from "./infra/api/express/routes/product/create-product-express.route";
