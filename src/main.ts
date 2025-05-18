@@ -15,8 +15,7 @@ import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-ac
 function main() {
   const productRepository = ProductRepository.create(prisma);
   const userRepository = UserRepository.create(prisma);
-  const productRepository = ProductRepository.create(prisma);
-  const userRepository = UserRepository.create(prisma);
+  
   const fileStorage = new AWSSimpleStorageService();
   const tokenService = new JwtTokenService();
 
