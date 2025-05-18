@@ -22,7 +22,7 @@ sign(
 
   generateTokens(payload: TokenPayload): TokenResponse {
     const accessToken = this.sign(payload, "1h", process.env.JWT_ACCESS_TOKEN_SECRET!);
-    const refreshToken = this.sign(payload, "7d", process.env.JWT_ACCESS_TOKEN_SECRET!);
+    const refreshToken = this.sign(payload, "7d", process.env.JWT_REFRESH_TOKEN_SECRET!);
 
     return {
       accessToken,
