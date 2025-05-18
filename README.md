@@ -10,3 +10,9 @@
 - S3_IMAGE_BUCKET: Bucket for model images. Example: tg-model-image
 
 - S3_MODEL_BUCKET: Bucket for model file. Example: tg-3d-model
+
+- JWT_SECRET: Secret for JWT token
+
+### Postman collection
+
+[Postman collection](./docs/collection/TG_3D_Commerce.postman_collection.json)

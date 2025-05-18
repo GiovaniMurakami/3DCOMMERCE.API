@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "dc34d4fe-2cb2-405e-9aaa-ca944ffb21eb",
+		"name": "TG 3D Commerce",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23766790"
+	},
+	"item": [
+		{
+			"name": "product",
+			"item": [
+				{
+					"name": "create product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "20",
+									"type": "text"
+								},
+								{
+									"key": "categoryId",
+									"value": "65334411-8f49-41fe-a3d3-b8e8335af509",
+									"type": "text"
+								},
+								{
+									"key": "images[0].image",
+									"type": "file",
+									"src": "/C:/Users/Renato/Downloads/dreamhouse-logo.png"
+								},
+								{
+									"key": "images[0].type",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "model",
+									"type": "file",
+									"src": "/C:/Users/Renato/Downloads/skull_simplified.stl"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "create user customer account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"teste2@gmail.com\",\r\n  \"fullName\": \"Joana Silva\",\r\n  \"cpf\": \"{{$randomPhoneNumber}}\",\r\n  \"phone\": \"11912345678\",\r\n  \"password\": \"teste123456\",\r\n  \"createdAt\": \"2025-05-14T14:00:00.000Z\",\r\n  \"updatedAt\": \"2025-05-14T14:00:00.000Z\",\r\n  \"customerProfile\": {\r\n    \"address\": \"Rua das Flores, 123\",\r\n    \"city\": \"São Paulo\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verifica se a resposta tem status 200\r",
+									"if (pm.response.code === 200) {\r",
+									"  const response = pm.response.json();\r",
+									"\r",
+									"  if (response.accessToken) {\r",
+									"    pm.environment.set(\"accessToken\", response.accessToken);\r",
+									"    console.log(\"Access token set successfully.\");\r",
+									"  } else {\r",
+									"    console.warn(\"Access token not found in response.\");\r",
+									"  }\r",
+									"} else {\r",
+									"  console.error(\"Login failed with status:\", pm.response.code);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"teste2@gmail.com\",\r\n  \"password\": \"teste123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"login"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
