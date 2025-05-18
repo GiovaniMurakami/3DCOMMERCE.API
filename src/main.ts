@@ -1,7 +1,7 @@
 import { ApiExpress } from "./infra/api/express/api.express";
 import { LoginRoute } from "./infra/api/express/routes/auth/login.route";
+import { RefreshTokenRoute } from "./infra/api/express/routes/auth/refresh-token.route";
 import { CreateProductRoute } from "./infra/api/express/routes/product/create-product-express.route";
-import { CreateCustomerAccountRoute } from "./infra/api/express/routes/user/create-customer-account-express.route";
 import { CreateCustomerAccountRoute } from "./infra/api/express/routes/user/create-customer-account-express.route";
 import { ProductRepository } from "./infra/repositories/product/product.repository";
 import { UserRepository } from "./infra/repositories/product/user.repository";
@@ -9,6 +9,7 @@ import { JwtTokenService } from "./infra/services/auth/jwt-token.service";
 import AWSSimpleStorageService from "./infra/services/storage/aws-simple-storage.service";
 import { prisma } from "./package/prisma/prisma";
 import { LoginUseCase } from "./usecases/auth/login.usecase";
+import { RefreshTokenUseCase } from "./usecases/auth/refresh-token.usecase";
 import { CreateProductUsecase } from "./usecases/create-product/create-product.usecase";
 import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-account.usecase";	
 
@@ -22,12 +23,14 @@ function main() {
   const createProductUsecase = CreateProductUsecase.create(productRepository, fileStorage);
   const createCustomerAccountUseCase = CreateCustomerAccountUseCase.create(userRepository);
   const loginUseCase = LoginUseCase.create(userRepository, tokenService);
+  const refreshTokenUseCase = RefreshTokenUseCase.create(tokenService);
 
   const createProductRoute = CreateProductRoute.create(createProductUsecase);
   const createCustomerAccountRoute = CreateCustomerAccountRoute.create(createCustomerAccountUseCase);
   const loginRoute = LoginRoute.create(loginUseCase);
+  const refreshTokenRoute = RefreshTokenRoute.create(refreshTokenUseCase);
 
-  const api = ApiExpress.create([createProductRoute, createCustomerAccountRoute, loginRoute]);
+  const api = ApiExpress.create([createProductRoute, createCustomerAccountRoute, loginRoute, refreshTokenRoute]);
   const port = 8000;
   api.start(port);
 }
