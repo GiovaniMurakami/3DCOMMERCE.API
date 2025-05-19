@@ -1,5 +1,5 @@
 import { RefreshTokenUseCase } from "../../../../../usecases/auth/refresh-token.usecase";
-import { validationErrorHandler } from "../../middlewares/validation-error-handler.middleware";
+import { expressValidatorHandler } from "../../middlewares/exporess-validator-handler.middleware";
 import { HttpMethod, Route } from "../route";
 import { Request, Response } from "express";
 
@@ -26,7 +26,7 @@ export class RefreshTokenRoute implements Route {
 
   getHandler() {
     return [
-      validationErrorHandler,
+      expressValidatorHandler,
       async (req: Request, res: Response) => {
       const { refreshToken } = req.body;
 

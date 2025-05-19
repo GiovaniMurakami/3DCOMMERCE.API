@@ -4,7 +4,7 @@ import {
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { StorageGateway } from "../../../domain/storage/storage.gateway";
-import { CreateProductImageInputDto } from "../../../usecases/create-product/create-product.usecase";
+import { CreateProductImageInputDto } from "../../../usecases/product/create-product.usecase";
 
 export class AWSSimpleStorageService implements StorageGateway {
   private s3: S3Client;

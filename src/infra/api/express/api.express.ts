@@ -2,6 +2,7 @@ import { Api } from "../api";
 import express, { Express } from "express";
 import { Route } from "./routes/route";
 import multer from "multer";
+import { errorHandler } from "./middlewares/error-handler.middleware";
 
 export class ApiExpress implements Api {
   private app: Express;
@@ -12,6 +13,8 @@ export class ApiExpress implements Api {
     const upload = multer({ storage: multer.memoryStorage() });
     this.app.use(upload.any());
     this.addRoutes(routes);
+        this.app.use(errorHandler);
+
   }
 
   public static create(routes: Route[]) {

@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   CreateProductImageInputDto,
   CreateProductInputDto,
   CreateProductUsecase,
-} from "../../../../../usecases/create-product/create-product.usecase";
+} from "../../../../../usecases/product/create-product.usecase";
 import { HttpMethod, Route } from "../route";
 import Decimal from "decimal.js";
 import { authenticate } from "../../middlewares/token-authentication.middleware";
@@ -33,21 +33,26 @@ export class CreateProductRoute implements Route {
     return [
       authenticate,
       authorizeRoles(Role.ADMIN),
-      async (request: Request, response: Response) => {
-        const files = request.files as Express.Multer.File[];
-        const modelFile = files.find((file) => file.fieldname === "model");
-        const images = this.mapRequestToImageInputDto(request, files);
-        const input: CreateProductInputDto = {
-          name: request.body.name,
-          price: new Decimal(request.body.price),
-          categoryId: request.body.categoryId,
-          model: modelFile?.buffer ?? Buffer.from([]),
-          images,
-        };
-    
-        const output: CreateProductOutputDto = await this.createProductService.execute(input);
-        const responseBody = this.present(output);
-        response.status(201).json(responseBody);
+      async (request: Request, response: Response, next: NextFunction) => {
+        try {
+          const files = request.files as Express.Multer.File[];
+          const modelFile = files.find((file) => file.fieldname === "model");
+          const images = this.mapRequestToImageInputDto(request, files);
+
+          const input: CreateProductInputDto = {
+            name: request.body.name,
+            price: new Decimal(request.body.price),
+            categoryId: request.body.categoryId,
+            model: modelFile?.buffer ?? Buffer.from([]),
+            images,
+          };
+
+          const output: CreateProductOutputDto = await this.createProductService.execute(input);
+          const responseBody = this.present(output);
+          response.status(201).json(responseBody);
+        } catch (err) {
+          next(err);
+        }
       }
     ]
   }
