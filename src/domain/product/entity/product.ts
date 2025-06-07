@@ -12,6 +12,7 @@ export class Product {
     public name: string,
     public price: Decimal,
     public fileUrl: string,
+    public description: string,
     public createdBy: string,
     public categoryId: string,
     public productImages?: ProductImage[]

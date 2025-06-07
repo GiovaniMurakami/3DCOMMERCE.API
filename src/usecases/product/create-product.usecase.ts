@@ -11,6 +11,7 @@ import { ValidationError } from "../../domain/errors/common-validation-error";
 export type CreateProductInputDto = {
   name: string;
   price: Decimal;
+  description: string;
   categoryId: string;
   images: CreateProductImageInputDto[];
   model: Buffer;
@@ -49,6 +50,7 @@ export class CreateProductUsecase implements Usecase<CreateProductInputDto, Crea
       createProductInputDto.name,
       createProductInputDto.price,
       "",
+      createProductInputDto.description,
       userUuidMock,
       createProductInputDto.categoryId,
       productImages

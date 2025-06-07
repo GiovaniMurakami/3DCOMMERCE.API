@@ -35,6 +35,7 @@ export class ProductRepository {
       productRecord.name,
       new Decimal(productRecord.price),
       productRecord.fileUrl,
+      productRecord.description!,
       productRecord.createdBy,
       productRecord.categoryId,
       images
@@ -57,6 +58,7 @@ export class ProductRepository {
         name: product.name,
         price: product.price,
         fileUrl: product.fileUrl,
+        description: product.description,
         createdBy: product.createdBy,
         categoryId: product.categoryId,
       },

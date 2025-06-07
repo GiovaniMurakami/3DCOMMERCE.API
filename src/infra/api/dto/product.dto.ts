@@ -1,3 +1,5 @@
+import Decimal from "decimal.js";
+
 export interface ListProductsInputDto {
   page: number;
   limit: number;
@@ -25,8 +27,9 @@ export interface ListProductsOutputDto {
 export interface ProductOutputDto {
   id: string;
   name: string;
-  price: string;
+  price: Decimal;
   fileUrl: string;
+  description: string;
   createdBy: string;
   categoryId: string;
   createdAt?: Date;

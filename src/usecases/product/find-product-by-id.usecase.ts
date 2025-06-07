@@ -25,7 +25,8 @@ export class GetProductByIdUseCase implements Usecase<GetProductByIdInputDto, Ge
     return {
       id: product.id,
       name: product.name,
-      price: product.price.toString(),
+      price: product.price,
+      description: product.description,
       fileUrl: product.fileUrl,
       createdBy: product.createdBy,
       categoryId: product.categoryId,

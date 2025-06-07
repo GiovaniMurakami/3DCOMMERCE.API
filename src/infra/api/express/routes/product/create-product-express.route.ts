@@ -42,6 +42,7 @@ export class CreateProductRoute implements Route {
           const input: CreateProductInputDto = {
             name: request.body.name,
             price: new Decimal(request.body.price),
+            description: request.body.description,
             categoryId: request.body.categoryId,
             model: modelFile?.buffer ?? Buffer.from([]),
             images,
