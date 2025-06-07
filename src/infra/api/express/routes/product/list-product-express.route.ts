@@ -26,12 +26,14 @@ export class ListProductsRoute implements Route {
         const limit = parseInt(req.query.limit as string) || 10;
         const name = req.query.name as string | undefined;
         const categoryId = req.query.categoryId as string | undefined;
+        const categoryName = req.query.categoryName as string | undefined;
 
         const result = await this.useCase.execute({
           page,
           limit,
           name,
-          categoryId
+          categoryId,
+          categoryName
         });
 
         return res.status(200).json(result);

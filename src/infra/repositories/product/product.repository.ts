@@ -1,9 +1,50 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { Product } from "../../../domain/product/entity/product";
 import { ListProductsInputDto, ListProductsOutputDto } from "../../api/dto/product.dto";
+import { ProductImage } from "../../../domain/product/entity/product-image";
+import { Category } from "../../../domain/product/entity/category";
+import Decimal from "decimal.js";
 
 export class ProductRepository {
   private constructor(private readonly prismaClient: PrismaClient) {}
+
+  public async findById(id: string): Promise<Product | null> {
+    const productRecord = await this.prismaClient.product.findUnique({
+      where: { id },
+      include: {
+        productImages: true,
+        category: true,
+      },
+    });
+
+    if (!productRecord) return null;
+
+    const images: ProductImage[] = productRecord.productImages.map(img => new ProductImage(
+      img.id,
+      img.url,
+      img.type,
+      img.productId
+    ));
+
+    const category: Category | undefined = productRecord.category
+      ? new Category(productRecord.category.id, productRecord.category.name, productRecord.category.createdAt, productRecord.category.updatedAt)
+      : undefined;
+
+    const product = new Product(
+      productRecord.id,
+      productRecord.name,
+      new Decimal(productRecord.price),
+      productRecord.fileUrl,
+      productRecord.createdBy,
+      productRecord.categoryId,
+      images
+    );
+
+    product.category = category;
+    product.updatedAt = productRecord.updatedAt ?? undefined;
+
+    return product;
+  }
 
   public static create(prismaClient: PrismaClient) {
     return new ProductRepository(prismaClient);
@@ -43,7 +84,7 @@ export class ProductRepository {
   }
 
   async findAllPaginated(input: ListProductsInputDto): Promise<ListProductsOutputDto> {
-    const { page, limit, name, categoryId } = input;
+    const { page, limit, name, categoryId, categoryName } = input;
     const skip = (page - 1) * limit;
 
     const where: any = {};
@@ -57,6 +98,13 @@ export class ProductRepository {
 
     if (categoryId) {
       where.categoryId = categoryId;
+    } else if (categoryName) {
+      where.category = {
+        name: {
+          contains: categoryName,
+          mode: 'insensitive',
+        }
+      };
     }
 
     const [products, total] = await Promise.all([

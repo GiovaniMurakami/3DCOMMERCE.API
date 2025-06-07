@@ -2,6 +2,7 @@ import { ApiExpress } from "./infra/api/express/api.express";
 import { LoginRoute } from "./infra/api/express/routes/auth/login.route";
 import { RefreshTokenRoute } from "./infra/api/express/routes/auth/refresh-token.route";
 import { CreateProductRoute } from "./infra/api/express/routes/product/create-product-express.route";
+import { GetProductByIdRoute } from "./infra/api/express/routes/product/get-product-by-id-express.route";
 import { ListProductsRoute } from "./infra/api/express/routes/product/list-product-express.route";
 import { CreateCustomerAccountRoute } from "./infra/api/express/routes/user/create-customer-account-express.route";
 import { ProductRepository } from "./infra/repositories/product/product.repository";
@@ -12,6 +13,7 @@ import { prisma } from "./package/prisma/prisma";
 import { LoginUseCase } from "./usecases/auth/login.usecase";
 import { RefreshTokenUseCase } from "./usecases/auth/refresh-token.usecase";
 import { CreateProductUsecase } from "./usecases/product/create-product.usecase";
+import { GetProductByIdUseCase } from "./usecases/product/find-product-by-id.usecase";
 import { ListProductsUseCase } from "./usecases/product/list-products.usecase";
 import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-account.usecase";	
 
@@ -27,14 +29,16 @@ function main() {
   const loginUseCase = LoginUseCase.create(userRepository, tokenService);
   const refreshTokenUseCase = RefreshTokenUseCase.create(tokenService);
   const listProductsUseCase = ListProductsUseCase.create(productRepository);
+  const getProductByIdUseCase = GetProductByIdUseCase.create(productRepository);
 
   const createProductRoute = CreateProductRoute.create(createProductUsecase);
   const createCustomerAccountRoute = CreateCustomerAccountRoute.create(createCustomerAccountUseCase);
   const loginRoute = LoginRoute.create(loginUseCase);
   const refreshTokenRoute = RefreshTokenRoute.create(refreshTokenUseCase);
   const listProductsRoute = ListProductsRoute.create(listProductsUseCase);
+  const getProductByIdRoute = GetProductByIdRoute.create(getProductByIdUseCase);
 
-  const api = ApiExpress.create([createProductRoute, createCustomerAccountRoute, loginRoute, refreshTokenRoute, listProductsRoute]);
+  const api = ApiExpress.create([createProductRoute, createCustomerAccountRoute, loginRoute, refreshTokenRoute, listProductsRoute, getProductByIdRoute]);
   const port = 8000;
   api.start(port);
 }

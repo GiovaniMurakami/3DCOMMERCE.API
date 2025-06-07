@@ -3,7 +3,7 @@ import { ProductImage } from "./product-image";
 import { Category } from "./category";
 
 export class Product {
-  public readonly createdAt?: Date;
+  public createdAt?: Date;
   public updatedAt?: Date;
   public category?: Category;
 
