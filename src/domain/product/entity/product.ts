@@ -3,7 +3,7 @@ import { ProductImage } from "./product-image";
 import { Category } from "./category";
 
 export class Product {
-  public readonly createdAt?: Date;
+  public createdAt?: Date;
   public updatedAt?: Date;
   public category?: Category;
 
@@ -12,6 +12,7 @@ export class Product {
     public name: string,
     public price: Decimal,
     public fileUrl: string,
+    public description: string,
     public createdBy: string,
     public categoryId: string,
     public productImages?: ProductImage[]

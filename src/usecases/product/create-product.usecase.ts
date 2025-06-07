@@ -6,13 +6,17 @@ import { Usecase } from "../usecase";
 import { randomUUID } from "crypto";
 import { StorageGateway } from "../../domain/storage/storage.gateway";
 import { ProductImage } from "../../domain/product/entity/product-image";
+import { ValidationError } from "../../domain/errors/common-validation-error";
+import { TokenPayload } from "../../infra/api/dto/token-response.dto";
 
 export type CreateProductInputDto = {
   name: string;
   price: Decimal;
+  description: string;
   categoryId: string;
   images: CreateProductImageInputDto[];
   model: Buffer;
+  userId: string;
 };
 
 export type CreateProductImageInputDto = {
@@ -32,8 +36,9 @@ export class CreateProductUsecase implements Usecase<CreateProductInputDto, Crea
   }
 
   public async execute(createProductInputDto: CreateProductInputDto): Promise<CreateProductOutputDto> {
+    this.validateMainImage(createProductInputDto.images);
+
     const productUuid = randomUUID();
-    const userUuidMock = "65334411-8f49-41fe-a3d3-b8e8335af509";
     let fileUrl: string;
     let imagesUrl: string[];
     
@@ -46,7 +51,8 @@ export class CreateProductUsecase implements Usecase<CreateProductInputDto, Crea
       createProductInputDto.name,
       createProductInputDto.price,
       "",
-      userUuidMock,
+      createProductInputDto.description,
+      createProductInputDto.userId,
       createProductInputDto.categoryId,
       productImages
     );
@@ -73,5 +79,13 @@ export class CreateProductUsecase implements Usecase<CreateProductInputDto, Crea
     };
 
     return output;
+  }
+
+  private validateMainImage(images: CreateProductImageInputDto[]) {
+    const mainImagesCount = images.filter(img => img.type.toLowerCase() === "main").length;
+
+    if (mainImagesCount !== 1) {
+      throw new ValidationError('There must be exactly one image with the type "main" (main product image)', 400);
+    }
   }
 }

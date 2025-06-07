@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { HttpMethod, Route } from "../route";
-import { validationErrorHandler } from "../../middlewares/validation-error-handler.middleware";
+import { expressValidatorHandler } from "../../middlewares/exporess-validator-handler.middleware";
 import { LoginInputDto } from "../../../../../usecases/auth/login.usecase";
 
 export class LoginRoute implements Route {
@@ -20,7 +20,7 @@ export class LoginRoute implements Route {
 
   public getHandler() {
     return [
-      validationErrorHandler,
+      expressValidatorHandler,
       async (req: Request, res: Response) => {
         const loginInputDto: LoginInputDto = req.body;
 

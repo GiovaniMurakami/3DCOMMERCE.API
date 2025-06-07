@@ -1,4 +1,4 @@
-import { CreateProductImageInputDto } from "../../usecases/create-product/create-product.usecase";
+import { CreateProductImageInputDto } from "../../usecases/product/create-product.usecase";
 
 export interface StorageGateway {
   saveModel(productId: string, data: Buffer): Promise<string>;
