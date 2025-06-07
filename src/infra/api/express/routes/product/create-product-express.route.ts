@@ -19,7 +19,7 @@ export class CreateProductRoute implements Route {
     private readonly path: string,
     private readonly method: HttpMethod,
     private readonly createProductService: CreateProductUsecase
-  ) {}
+  ) { }
 
   public static create(createProductService: CreateProductUsecase) {
     return new CreateProductRoute(
@@ -46,6 +46,7 @@ export class CreateProductRoute implements Route {
             categoryId: request.body.categoryId,
             model: modelFile?.buffer ?? Buffer.from([]),
             images,
+            userId: (request as any).tokenPayload.userId
           };
 
           const output: CreateProductOutputDto = await this.createProductService.execute(input);
@@ -76,7 +77,7 @@ export class CreateProductRoute implements Route {
     files: Express.Multer.File[]
   ): CreateProductImageInputDto[] {
     const images: CreateProductImageInputDto[] = [];
-  
+
     files
       .filter((file) => file.fieldname.startsWith("images["))
       .forEach((file) => {
@@ -91,7 +92,7 @@ export class CreateProductRoute implements Route {
           };
         }
       });
-  
+
     return images;
   }
 }
