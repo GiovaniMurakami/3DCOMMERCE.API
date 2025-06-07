@@ -45,17 +45,22 @@
 								{
 									"key": "images[0].image",
 									"type": "file",
-									"src": "/C:/Users/Renato/Downloads/dreamhouse-logo.png"
+									"src": "/C:/Users/Renato/Downloads/axolot1.png"
 								},
 								{
 									"key": "images[0].type",
-									"value": "test",
+									"value": "main",
 									"type": "text"
 								},
 								{
 									"key": "model",
 									"type": "file",
 									"src": "/C:/Users/Renato/Downloads/skull_simplified.stl"
+								},
+								{
+									"key": "description",
+									"value": "testxxzxz",
+									"type": "text"
 								}
 							]
 						},
@@ -68,6 +73,91 @@
 							"port": "8000",
 							"path": [
 								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list products",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "categoryId",
+									"value": "7aae4b67-3ac7-4060-ab2c-af8e79d1914e",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "categoryName",
+									"value": "test",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get product by id",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/products/:productId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"products",
+								":productId"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "9aaa6295-a4d0-42a9-be7b-ff4c9b0298c6"
+								}
 							]
 						}
 					},
@@ -230,7 +320,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"teste2@gmail.com\",\r\n  \"password\": \"teste123456\"\r\n}",
+							"raw": "{\r\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3M2ZkODk2ZC01Y2U1LTRkYmQtOThmZC1hODdjOGJlMjgzZmUiLCJ1c2VyUm9sZSI6IkFETUlOIiwiaWF0IjoxNzQ3NTQwNDEyLCJleHAiOjE3NDgxNDUyMTJ9.HXhl_Xj3jstTV5DWuhUpIIk-Nqzyr-cMkDMjprSCZEI\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -238,14 +328,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/login",
+							"raw": "http://localhost:8000/refresh-token",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8000",
 							"path": [
-								"login"
+								"refresh-token"
 							],
 							"query": [
 								{
@@ -261,6 +351,50 @@
 								{
 									"key": "",
 									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "category",
+			"item": [
+				{
+					"name": "list categories",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "categoryId",
+									"value": "7aae4b67-3ac7-4060-ab2c-af8e79d1914e",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "categoryName",
+									"value": "test",
 									"disabled": true
 								}
 							]
