@@ -1,7 +1,10 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { HttpMethod, Route } from "../route";
 import { CreateCategoryUseCase } from "../../../../../usecases/category/create-category.usecase";
 import { JwtTokenService } from "../../../../services/auth/jwt-token.service";
+import { authenticate } from "../../middlewares/token-authentication.middleware";
+import { authorizeRoles } from "../../middlewares/authorization.middleware";
+import { Role } from "@prisma/client";
 
 export class CreateCategoryRoute implements Route {
     private constructor(
@@ -22,20 +25,16 @@ export class CreateCategoryRoute implements Route {
 
     public getHandler() {
         return [
-            async (request: Request, response: Response) => {
+            authenticate,
+            authorizeRoles(Role.ADMIN),
+            async (request: Request, response: Response, next: NextFunction) => {
                 try {
-                    const authHeader = request.headers.authorization;
-                    if (!authHeader) return response.status(401).json({ error: "Token missing" });
-
-                    const token = authHeader.replace("Bearer ", "");
-                    const payload = this.tokenService.verify(token);
-                    const userRole = (payload as any).userRole;
-
                     const { name } = request.body;
+                    const userRole = (request as any).tokenPayload.userRole;
                     const category = await this.createCategoryUseCase.execute({ name, userRole });
                     response.status(201).json(category);
                 } catch (err) {
-                    response.status(400).json({ error: (err as Error).message });
+                    next(err);
                 }
             }
         ];
