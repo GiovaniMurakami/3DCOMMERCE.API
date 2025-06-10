@@ -2,6 +2,7 @@ import { Api } from "../api";
 import express, { Express } from "express";
 import { Route } from "./routes/route";
 import multer from "multer";
+import cors from "cors";
 import { errorHandler } from "./middlewares/error-handler.middleware";
 
 export class ApiExpress implements Api {
@@ -9,12 +10,20 @@ export class ApiExpress implements Api {
 
   private constructor(routes: Route[]) {
     this.app = express();
+
+    this.app.use(cors({
+      origin: "*",
+      credentials: true,
+    }));
+
     this.app.use(express.json());
+
     const upload = multer({ storage: multer.memoryStorage() });
     this.app.use(upload.any());
-    this.addRoutes(routes);
-        this.app.use(errorHandler);
 
+    this.addRoutes(routes);
+
+    this.app.use(errorHandler);
   }
 
   public static create(routes: Route[]) {
