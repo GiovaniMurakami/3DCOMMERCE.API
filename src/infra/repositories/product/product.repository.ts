@@ -65,6 +65,18 @@ export class ProductRepository {
     });
   }
 
+  public async incrementViews(productId: string): Promise<void> {
+    await this.prismaClient.product.update({
+      where: { id: productId },
+      data: {
+        views: {
+          increment: 1
+        }
+      }
+    });
+  }
+
+
   public async update(productId: string, data: {
     name: string;
     price: Decimal;
@@ -151,7 +163,7 @@ export class ProductRepository {
   }
 
   async findAllPaginated(input: ListProductsInputDto): Promise<ListProductsOutputDto> {
-    const { page, limit, name, categoryId, categoryName } = input;
+    const { page, limit, name, categoryId, categoryName, sortBy = "createdAt", sortDir = "desc" } = input;
     const skip = (page - 1) * limit;
 
     const where: any = {};
@@ -174,6 +186,10 @@ export class ProductRepository {
       };
     }
 
+    const orderBy = {
+      [sortBy]: sortDir,
+    };
+
     const [products, total] = await Promise.all([
       this.prismaClient.product.findMany({
         where,
@@ -186,7 +202,7 @@ export class ProductRepository {
           },
           category: true
         },
-        orderBy: { createdAt: "desc" },
+        orderBy,
       }),
       this.prismaClient.product.count({ where }),
     ]);
@@ -205,6 +221,7 @@ export class ProductRepository {
       limit,
     };
   }
+
 
   public async runInTransaction<T>(fn: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
     return await this.prismaClient.$transaction(fn);

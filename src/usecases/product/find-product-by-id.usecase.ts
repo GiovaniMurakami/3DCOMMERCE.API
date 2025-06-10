@@ -21,7 +21,7 @@ export class GetProductByIdUseCase implements Usecase<GetProductByIdInputDto, Ge
     if (isValidUuid(input.id) === false) throw new ValidationError('Invalid UUID', 400);
     const product = await this.productRepository.findById(input.id);
     if (!product) return null;
-
+    this.productRepository.incrementViews(input.id);
     return {
       id: product.id,
       name: product.name,

@@ -27,17 +27,29 @@ export class ListProductsRoute implements Route {
         const name = req.query.name as string | undefined;
         const categoryId = req.query.categoryId as string | undefined;
         const categoryName = req.query.categoryName as string | undefined;
-
+        let sortBy = (req.query.sortBy as string | undefined) ?? "createdAt";
+        const sortDir = this.parseSortDir(req.query.sortDir as string | undefined) ?? "desc";
+        const allowedSortBy = ["createdAt", "name", "price", "views"] as const;
+        if (!allowedSortBy.includes(sortBy as any)) {
+          return res.status(400).json({ error: "Invalid sortBy field" });
+        }
         const result = await this.useCase.execute({
           page,
           limit,
           name,
           categoryId,
-          categoryName
+          categoryName,
+          sortBy,
+          sortDir
         });
 
         return res.status(200).json(result);
       }
     ];
+  }
+  parseSortDir(dir: string | undefined): "asc" | "desc" | undefined {
+    if (!dir) return undefined;
+    const lower = dir.toLowerCase();
+    return lower === "asc" || lower === "desc" ? lower : undefined;
   }
 }

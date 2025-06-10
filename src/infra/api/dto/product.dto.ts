@@ -6,6 +6,8 @@ export interface ListProductsInputDto {
   name?: string;
   categoryId?: string;
   categoryName?: string;
+  sortBy?: string;
+  sortDir?: "asc" | "desc";
 }
 
 export interface ProductListItemDto  {
