@@ -6,7 +6,7 @@ import { Category } from "../../../domain/product/entity/category";
 import Decimal from "decimal.js";
 
 export class ProductRepository {
-  private constructor(private readonly prismaClient: PrismaClient) {}
+  private constructor(private readonly prismaClient: PrismaClient) { }
 
   public async findById(id: string): Promise<Product | null> {
     const productRecord = await this.prismaClient.product.findUnique({
@@ -65,6 +65,71 @@ export class ProductRepository {
     });
   }
 
+  public async update(productId: string, data: {
+    name: string;
+    price: Decimal;
+    description: string;
+    categoryId: string;
+  }): Promise<void> {
+    console.log('oia: ', productId);
+    await this.prismaClient.product.update({
+      where: { id: productId },
+      data,
+    });
+  }
+
+  async delete(productId: string): Promise<{
+    modelUrl: string | null;
+    imageUrls: string[];
+  }> {
+    return await this.runInTransaction(async (tx) => {
+      const product = await tx.product.findUnique({
+        where: { id: productId },
+        include: {
+          productImages: true,
+        },
+      });
+
+      if (!product) {
+        throw new Error("Product not found");
+      }
+
+      await tx.productImage.deleteMany({
+        where: { productId }
+      });
+
+      await tx.product.delete({
+        where: { id: productId },
+      });
+
+      return {
+        modelUrl: product.fileUrl,
+        imageUrls: product.productImages.map(img => img.url),
+      };
+    });
+  }
+
+
+
+  public async updateModelUrl(productId: string, modelUrl: string): Promise<void> {
+    await this.prismaClient.product.update({
+      where: { id: productId },
+      data: { fileUrl: modelUrl },
+    });
+  }
+
+  public async replaceProductImages(productId: string, images: ProductImage[]): Promise<void> {
+    await this.prismaClient.productImage.deleteMany({ where: { productId } });
+    await this.prismaClient.productImage.createMany({
+      data: images.map((img) => ({
+        id: img.id,
+        url: img.url,
+        type: img.type,
+        productId,
+      })),
+    });
+  }
+
   public async updateFileAndImagesUrls(
     productId: string,
     fileUrl: string,
@@ -114,12 +179,12 @@ export class ProductRepository {
         where,
         skip,
         take: limit,
-        include: { 
+        include: {
           productImages: {
             where: { type: 'main' },
             take: 1
           },
-          category: true 
+          category: true
         },
         orderBy: { createdAt: "desc" },
       }),

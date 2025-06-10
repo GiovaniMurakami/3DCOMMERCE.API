@@ -3,8 +3,10 @@ import { LoginRoute } from "./infra/api/express/routes/auth/login.route";
 import { RefreshTokenRoute } from "./infra/api/express/routes/auth/refresh-token.route";
 import { ListCategoriesRoute } from "./infra/api/express/routes/category/list-categories-express.route";
 import { CreateProductRoute } from "./infra/api/express/routes/product/create-product-express.route";
+import { DeleteProductRoute } from "./infra/api/express/routes/product/delete-product-express.route";
 import { GetProductByIdRoute } from "./infra/api/express/routes/product/get-product-by-id-express.route";
 import { ListProductsRoute } from "./infra/api/express/routes/product/list-product-express.route";
+import { UpdateProductRoute } from "./infra/api/express/routes/product/update-product-express.route";
 import { CreateCustomerAccountRoute } from "./infra/api/express/routes/user/create-customer-account-express.route";
 import { CategoryRepository } from "./infra/repositories/product/category.repository";
 import { ProductRepository } from "./infra/repositories/product/product.repository";
@@ -15,9 +17,11 @@ import { prisma } from "./package/prisma/prisma";
 import { LoginUseCase } from "./usecases/auth/login.usecase";
 import { RefreshTokenUseCase } from "./usecases/auth/refresh-token.usecase";
 import { CreateProductUsecase } from "./usecases/product/create-product.usecase";
+import { DeleteProductUsecase } from "./usecases/product/delete-product.usecase";
 import { GetProductByIdUseCase } from "./usecases/product/find-product-by-id.usecase";
 import { ListCategoriesUseCase } from "./usecases/product/list-categories.usecase";
 import { ListProductsUseCase } from "./usecases/product/list-products.usecase";
+import { UpdateProductUsecase } from "./usecases/product/update-product.usecase";
 import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-account.usecase";	
 
 function main() {
@@ -29,6 +33,8 @@ function main() {
   const tokenService = new JwtTokenService();
 
   const createProductUsecase = CreateProductUsecase.create(productRepository, fileStorage);
+  const updateProductUsecase = UpdateProductUsecase.create(productRepository, fileStorage);
+  const deleteProductUsecase = DeleteProductUsecase.create(productRepository, fileStorage);
   const createCustomerAccountUseCase = CreateCustomerAccountUseCase.create(userRepository);
   const loginUseCase = LoginUseCase.create(userRepository, tokenService);
   const refreshTokenUseCase = RefreshTokenUseCase.create(tokenService);
@@ -37,6 +43,8 @@ function main() {
   const listCategoriesUseCase = ListCategoriesUseCase.create(categoryRepository);
 
   const createProductRoute = CreateProductRoute.create(createProductUsecase);
+  const updateProductRoute = UpdateProductRoute.create(updateProductUsecase);
+  const deleteProductRoute = DeleteProductRoute.create(deleteProductUsecase);
   const createCustomerAccountRoute = CreateCustomerAccountRoute.create(createCustomerAccountUseCase);
   const loginRoute = LoginRoute.create(loginUseCase);
   const refreshTokenRoute = RefreshTokenRoute.create(refreshTokenUseCase);
@@ -44,7 +52,18 @@ function main() {
   const getProductByIdRoute = GetProductByIdRoute.create(getProductByIdUseCase);
   const listCategoriesRoute = ListCategoriesRoute.create(listCategoriesUseCase);
 
-  const api = ApiExpress.create([createProductRoute, createCustomerAccountRoute, loginRoute, refreshTokenRoute, listProductsRoute, getProductByIdRoute, listCategoriesRoute]);
+  const api = ApiExpress.create([
+    createProductRoute,
+    updateProductRoute,
+    deleteProductRoute,
+    createCustomerAccountRoute,
+    loginRoute,
+    refreshTokenRoute,
+    listProductsRoute,
+    getProductByIdRoute,
+    listCategoriesRoute
+  ]);
+  
   const port = 8000;
   api.start(port);
 }
