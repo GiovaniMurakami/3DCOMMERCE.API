@@ -98,7 +98,7 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "test",
+									"value": "testxzxcsasdas",
 									"type": "text"
 								},
 								{
@@ -163,7 +163,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/products",
+							"raw": "http://localhost:8000/products?sortDir=desc&sortBy=views",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -187,6 +187,14 @@
 									"key": "categoryName",
 									"value": "test",
 									"disabled": true
+								},
+								{
+									"key": "sortDir",
+									"value": "desc"
+								},
+								{
+									"key": "sortBy",
+									"value": "views"
 								}
 							]
 						}
