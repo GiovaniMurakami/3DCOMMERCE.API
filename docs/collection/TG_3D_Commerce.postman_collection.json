@@ -79,6 +79,82 @@
 					"response": []
 				},
 				{
+					"name": "update product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3M2ZkODk2ZC01Y2U1LTRkYmQtOThmZC1hODdjOGJlMjgzZmUiLCJ1c2VyUm9sZSI6IkFETUlOIiwiaWF0IjoxNzQ5NTIxNDMxLCJleHAiOjE3NDk1MjUwMzF9.FY2WwQ7WA8_KlWDQ1tM0v1UqI9W0oz_OeFotkM_L1yE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "20",
+									"type": "text"
+								},
+								{
+									"key": "categoryId",
+									"value": "65334411-8f49-41fe-a3d3-b8e8335af509",
+									"type": "text"
+								},
+								{
+									"key": "images[0].image",
+									"type": "file",
+									"src": "/C:/Users/Renato/Documents/texture.png"
+								},
+								{
+									"key": "images[0].type",
+									"value": "main",
+									"type": "text"
+								},
+								{
+									"key": "model",
+									"type": "file",
+									"src": "/C:/Users/Renato/Downloads/skull_simplified.stl"
+								},
+								{
+									"key": "description",
+									"value": "testxxzxz",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/products/:productId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"products",
+								":productId"
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "9aaa6295-a4d0-42a9-be7b-ff4c9b0298c6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "list products",
 					"request": {
 						"auth": {
@@ -157,6 +233,59 @@
 								{
 									"key": "productId",
 									"value": "9aaa6295-a4d0-42a9-be7b-ff4c9b0298c6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete product by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3M2ZkODk2ZC01Y2U1LTRkYmQtOThmZC1hODdjOGJlMjgzZmUiLCJ1c2VyUm9sZSI6IkFETUlOIiwiaWF0IjoxNzQ5NTIxMTEyLCJleHAiOjE3NDk1MjQ3MTJ9.05adIl5YUU8OvTlTf89GPkzxpyurL8H9JyGNsNvkaaw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/products/:productId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"products",
+								":productId"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "23e0bdfe-ecfc-435f-a55e-b234070f925d"
 								}
 							]
 						}
