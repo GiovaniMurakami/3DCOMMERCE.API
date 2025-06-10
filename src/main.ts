@@ -12,6 +12,8 @@ import { CreateCategoryUseCase } from "./usecases/category/create-category.useca
 import { CreateCategoryRoute } from "./infra/api/express/routes/category/create-category-express.route";
 import { CategoryRepository } from "./infra/repositories/product/category.repository";
 import { FindUserByIdUseCase } from "./usecases/user/find-user-by-id.usecase";
+import { DeleteCategoryRoute } from "./infra/api/express/routes/category/delete-category-express.route";
+
 import { GetUserDataRoute } from "./infra/api/express/routes/user/get-user-data-express.route";
 import { ProductRepository } from "./infra/repositories/product/product.repository";
 import { UserRepository } from "./infra/repositories/product/user.repository";
@@ -51,6 +53,7 @@ function main() {
 
   const createCategoryUseCase = CreateCategoryUseCase.create(categoryRepository);
   const createCategoryRoute = CreateCategoryRoute.create(createCategoryUseCase, tokenService);
+  const deleteCategoryRoute = DeleteCategoryRoute.create(categoryRepository);
 
   const createProductRoute = CreateProductRoute.create(createProductUsecase);
   const updateProductRoute = UpdateProductRoute.create(updateProductUsecase);
@@ -73,7 +76,8 @@ function main() {
     getProductByIdRoute,
     listCategoriesRoute,
     getUserDataRoute,
-    createCategoryRoute
+    createCategoryRoute,
+    deleteCategoryRoute
   ]);
 
   const port = 8000;

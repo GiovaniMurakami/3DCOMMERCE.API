@@ -21,6 +21,24 @@ export class CategoryRepository {
     };
   }
 
+  async hasProducts(categoryId: string): Promise<boolean> {
+    const count = await this.prismaClient.product.count({
+      where: { categoryId }
+    });
+    return count > 0;
+  }
+
+  async findById(id: string): Promise<CategoryDto | null> {
+    const category = await this.prismaClient.category.findUnique({
+      where: { id }
+    });
+    if (!category) return null;
+    return {
+      id: category.id,
+      name: category.name,
+    };
+  }
+
   async findAll(): Promise<CategoryDto[]> {
     const categories = await this.prismaClient.category.findMany({
       orderBy: { name: "asc" },
@@ -30,6 +48,12 @@ export class CategoryRepository {
       id: c.id,
       name: c.name,
     }));
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.prismaClient.category.delete({
+      where: { id }
+    });
   }
 
   async count(): Promise<number> {
