@@ -9,6 +9,8 @@ import { ListProductsRoute } from "./infra/api/express/routes/product/list-produ
 import { UpdateProductRoute } from "./infra/api/express/routes/product/update-product-express.route";
 import { CreateCustomerAccountRoute } from "./infra/api/express/routes/user/create-customer-account-express.route";
 import { CategoryRepository } from "./infra/repositories/product/category.repository";
+import { FindUserByIdUseCase } from "./usecases/user/find-user-by-id.usecase";
+import { GetUserDataRoute } from "./infra/api/express/routes/user/get-user-data-express.route";
 import { ProductRepository } from "./infra/repositories/product/product.repository";
 import { UserRepository } from "./infra/repositories/product/user.repository";
 import { JwtTokenService } from "./infra/services/auth/jwt-token.service";
@@ -22,13 +24,13 @@ import { GetProductByIdUseCase } from "./usecases/product/find-product-by-id.use
 import { ListCategoriesUseCase } from "./usecases/product/list-categories.usecase";
 import { ListProductsUseCase } from "./usecases/product/list-products.usecase";
 import { UpdateProductUsecase } from "./usecases/product/update-product.usecase";
-import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-account.usecase";	
+import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-account.usecase";
 
 function main() {
   const productRepository = ProductRepository.create(prisma);
   const userRepository = UserRepository.create(prisma);
   const categoryRepository = CategoryRepository.create(prisma);
-  
+
   const fileStorage = new AWSSimpleStorageService();
   const tokenService = new JwtTokenService();
 
@@ -41,6 +43,9 @@ function main() {
   const listProductsUseCase = ListProductsUseCase.create(productRepository);
   const getProductByIdUseCase = GetProductByIdUseCase.create(productRepository);
   const listCategoriesUseCase = ListCategoriesUseCase.create(categoryRepository);
+
+  const findUserByIdUseCase = FindUserByIdUseCase.create(userRepository);
+  const getUserDataRoute = GetUserDataRoute.create(findUserByIdUseCase, tokenService);
 
   const createProductRoute = CreateProductRoute.create(createProductUsecase);
   const updateProductRoute = UpdateProductRoute.create(updateProductUsecase);
@@ -63,7 +68,7 @@ function main() {
     getProductByIdRoute,
     listCategoriesRoute
   ]);
-  
+
   const port = 8000;
   api.start(port);
 }
