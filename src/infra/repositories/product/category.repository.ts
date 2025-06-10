@@ -2,10 +2,23 @@ import { PrismaClient } from "@prisma/client";
 import { CategoryDto } from "../../api/dto/category.dto";
 
 export class CategoryRepository {
-  private constructor(private readonly prismaClient: PrismaClient) {}
+  private constructor(private readonly prismaClient: PrismaClient) { }
 
   public static create(prismaClient: PrismaClient) {
     return new CategoryRepository(prismaClient);
+  }
+
+  async create(name: string): Promise<CategoryDto> {
+    const category = await this.prismaClient.category.create({
+      data: {
+        id: crypto.randomUUID(),
+        name
+      }
+    });
+    return {
+      id: category.id,
+      name: category.name,
+    };
   }
 
   async findAll(): Promise<CategoryDto[]> {

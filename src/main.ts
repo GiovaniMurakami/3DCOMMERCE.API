@@ -8,6 +8,8 @@ import { GetProductByIdRoute } from "./infra/api/express/routes/product/get-prod
 import { ListProductsRoute } from "./infra/api/express/routes/product/list-product-express.route";
 import { UpdateProductRoute } from "./infra/api/express/routes/product/update-product-express.route";
 import { CreateCustomerAccountRoute } from "./infra/api/express/routes/user/create-customer-account-express.route";
+import { CreateCategoryUseCase } from "./usecases/category/create-category.usecase";
+import { CreateCategoryRoute } from "./infra/api/express/routes/category/create-category-express.route";
 import { CategoryRepository } from "./infra/repositories/product/category.repository";
 import { FindUserByIdUseCase } from "./usecases/user/find-user-by-id.usecase";
 import { GetUserDataRoute } from "./infra/api/express/routes/user/get-user-data-express.route";
@@ -47,6 +49,9 @@ function main() {
   const findUserByIdUseCase = FindUserByIdUseCase.create(userRepository);
   const getUserDataRoute = GetUserDataRoute.create(findUserByIdUseCase, tokenService);
 
+  const createCategoryUseCase = CreateCategoryUseCase.create(categoryRepository);
+  const createCategoryRoute = CreateCategoryRoute.create(createCategoryUseCase, tokenService);
+
   const createProductRoute = CreateProductRoute.create(createProductUsecase);
   const updateProductRoute = UpdateProductRoute.create(updateProductUsecase);
   const deleteProductRoute = DeleteProductRoute.create(deleteProductUsecase);
@@ -66,7 +71,9 @@ function main() {
     refreshTokenRoute,
     listProductsRoute,
     getProductByIdRoute,
-    listCategoriesRoute
+    listCategoriesRoute,
+    getUserDataRoute,
+    createCategoryRoute
   ]);
 
   const port = 8000;
