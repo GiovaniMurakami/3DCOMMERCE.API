@@ -21,6 +21,13 @@ export class CategoryRepository {
     };
   }
 
+  async update(id: string, name: string): Promise<void> {
+    await this.prismaClient.category.update({
+      where: { id },
+      data: { name }
+    });
+  }
+
   async hasProducts(categoryId: string): Promise<boolean> {
     const count = await this.prismaClient.product.count({
       where: { categoryId }
