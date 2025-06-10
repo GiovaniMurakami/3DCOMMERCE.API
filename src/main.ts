@@ -7,6 +7,8 @@ import { GetProductByIdRoute } from "./infra/api/express/routes/product/get-prod
 import { ListProductsRoute } from "./infra/api/express/routes/product/list-product-express.route";
 import { CreateCustomerAccountRoute } from "./infra/api/express/routes/user/create-customer-account-express.route";
 import { CategoryRepository } from "./infra/repositories/product/category.repository";
+import { FindUserByIdUseCase } from "./usecases/user/find-user-by-id.usecase";
+import { GetUserDataRoute } from "./infra/api/express/routes/user/get-user-data-express.route";
 import { ProductRepository } from "./infra/repositories/product/product.repository";
 import { UserRepository } from "./infra/repositories/product/user.repository";
 import { JwtTokenService } from "./infra/services/auth/jwt-token.service";
@@ -18,13 +20,13 @@ import { CreateProductUsecase } from "./usecases/product/create-product.usecase"
 import { GetProductByIdUseCase } from "./usecases/product/find-product-by-id.usecase";
 import { ListCategoriesUseCase } from "./usecases/product/list-categories.usecase";
 import { ListProductsUseCase } from "./usecases/product/list-products.usecase";
-import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-account.usecase";	
+import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-account.usecase";
 
 function main() {
   const productRepository = ProductRepository.create(prisma);
   const userRepository = UserRepository.create(prisma);
   const categoryRepository = CategoryRepository.create(prisma);
-  
+
   const fileStorage = new AWSSimpleStorageService();
   const tokenService = new JwtTokenService();
 
@@ -36,6 +38,9 @@ function main() {
   const getProductByIdUseCase = GetProductByIdUseCase.create(productRepository);
   const listCategoriesUseCase = ListCategoriesUseCase.create(categoryRepository);
 
+  const findUserByIdUseCase = FindUserByIdUseCase.create(userRepository);
+  const getUserDataRoute = GetUserDataRoute.create(findUserByIdUseCase, tokenService);
+
   const createProductRoute = CreateProductRoute.create(createProductUsecase);
   const createCustomerAccountRoute = CreateCustomerAccountRoute.create(createCustomerAccountUseCase);
   const loginRoute = LoginRoute.create(loginUseCase);
@@ -44,7 +49,7 @@ function main() {
   const getProductByIdRoute = GetProductByIdRoute.create(getProductByIdUseCase);
   const listCategoriesRoute = ListCategoriesRoute.create(listCategoriesUseCase);
 
-  const api = ApiExpress.create([createProductRoute, createCustomerAccountRoute, loginRoute, refreshTokenRoute, listProductsRoute, getProductByIdRoute, listCategoriesRoute]);
+  const api = ApiExpress.create([createProductRoute, createCustomerAccountRoute, loginRoute, refreshTokenRoute, listProductsRoute, getProductByIdRoute, listCategoriesRoute, getUserDataRoute]);
   const port = 8000;
   api.start(port);
 }
