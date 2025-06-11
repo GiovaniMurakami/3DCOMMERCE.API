@@ -24,28 +24,70 @@ export class OrderRepository {
     return result;
   }
 
-  public async findAllOrders(): Promise<Order[]> {
-    return this.prismaClient.order.findMany({
-      include: {
-        orderItem: true,
-        user: {
-          select: {
-            fullName: true,
-            email: true,
+  public async findAllOrders(limit: number, offset: number): Promise<{
+    data: Order[];
+    total: number;
+    limit: number;
+    offset: number;
+  }> {
+    const [orders, total] = await Promise.all([
+      this.prismaClient.order.findMany({
+        skip: offset,
+        take: limit,
+        include: {
+          orderItem: true,
+          user: {
+            select: {
+              id: true,
+              fullName: true,
+              email: true,
+            },
           },
         },
-      },
-    });
+      }),
+      this.prismaClient.order.count(),
+    ]);
+
+    return {
+      data: orders,
+      total,
+      limit,
+      offset,
+    };
   }
 
-  public async findOrdersByUserId(userId: string): Promise<Order[]> {
-    return this.prismaClient.order.findMany({
-      where: { userId },
-      include: {
-        orderItem: true,
-      },
-    });
+  public async findOrdersByUserId(
+    userId: string,
+    limit: number,
+    offset: number
+  ): Promise<{
+    data: Order[];
+    total: number;
+    limit: number;
+    offset: number;
+  }> {
+    const [orders, total] = await Promise.all([
+      this.prismaClient.order.findMany({
+        where: { userId },
+        skip: offset,
+        take: limit,
+        include: {
+          orderItem: true,
+        },
+      }),
+      this.prismaClient.order.count({
+        where: { userId },
+      }),
+    ]);
+
+    return {
+      data: orders,
+      total,
+      limit,
+      offset,
+    };
   }
+
   public async runInTransaction<T>(fn: (tx: OrderTransactionClient) => Promise<T>): Promise<T> {
     return this.prismaClient.$transaction((tx) => fn(new OrderTransactionClient(tx)));
   }
@@ -93,7 +135,6 @@ export class OrderTransactionClient {
   }
 
   public async updateOrderStatus(orderId: string, status: OrderStatus) {
-    console.log('olha o id:' , orderId);
     await this.tx.order.update({
       where: { id: orderId },
       data: { currentStatus: status },
@@ -101,8 +142,6 @@ export class OrderTransactionClient {
   }
 
   public async updateOrderItemPrice(orderItemId: string, price: Decimal) {
-    console.log('olha o id:' , orderItemId);
-    console.log('olha o price:' , price);
     await this.tx.orderItem.update({
       where: { id: orderItemId },
       data: { price },

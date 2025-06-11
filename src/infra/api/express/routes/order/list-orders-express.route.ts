@@ -10,7 +10,7 @@ export class ListOrdersRoute implements Route {
     private readonly path: string,
     private readonly method: HttpMethod,
     private readonly listOrdersUsecase: ListOrdersUsecase
-  ) {}
+  ) { }
 
   public static create(usecase: ListOrdersUsecase) {
     return new ListOrdersRoute("/orders", HttpMethod.GET, usecase);
@@ -24,10 +24,13 @@ export class ListOrdersRoute implements Route {
           const tokenPayload = (request as any).tokenPayload;
           const userId: string = tokenPayload.userId;
           const role: Role = tokenPayload.userRole;
-
+          const page = parseInt(request.query.page as string) || 1;
+          const limit = parseInt(request.query.limit as string) || 10;
           const input: ListOrdersInputDto = {
             userId,
             role,
+            page,
+            limit
           };
 
           const output: ListOrdersOutputDto = await this.listOrdersUsecase.execute(input);

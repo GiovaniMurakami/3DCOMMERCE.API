@@ -4,27 +4,38 @@ import { Role, Order } from "@prisma/client";
 export type ListOrdersInputDto = {
   userId: string;
   role: Role;
+  page: number;
+  limit: number;
 };
 
 export type ListOrdersOutputDto = {
-  orders: Order[];
+  data: Order[];
+  total: number;
+  page: number;
+  limit: number;
 };
-
 export class ListOrdersUsecase {
-  private constructor(private readonly orderRepository: any) {}
+  private constructor(private readonly orderRepository: any) { }
 
   public static create(orderRepository: any) {
     return new ListOrdersUsecase(orderRepository);
   }
 
   public async execute(input: ListOrdersInputDto): Promise<ListOrdersOutputDto> {
-    let orders: Order[];
+    const offset = (input.page - 1) * input.limit;
+
+    let result;
     if (input.role === Role.ADMIN) {
-      orders = await this.orderRepository.findAllOrders();
+      result = await this.orderRepository.findAllOrders(input.limit, offset);
     } else {
-      orders = await this.orderRepository.findOrdersByUserId(input.userId);
+      result = await this.orderRepository.findOrdersByUserId(input.userId, input.limit, offset);
     }
 
-    return { orders };
+    return {
+      data: result.data,
+      total: result.total,
+      page: input.page,
+      limit: input.limit,
+    };
   }
 }
