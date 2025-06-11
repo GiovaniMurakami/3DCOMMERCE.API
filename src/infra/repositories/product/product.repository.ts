@@ -83,7 +83,6 @@ export class ProductRepository {
     description: string;
     categoryId: string;
   }): Promise<void> {
-    console.log('oia: ', productId);
     await this.prismaClient.product.update({
       where: { id: productId },
       data,

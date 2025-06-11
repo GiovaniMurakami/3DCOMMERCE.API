@@ -1,10 +1,9 @@
 model Order {
   id            String      @id @db.Uuid
   currentStatus OrderStatus @map("current_status")
-  totalPrice    Decimal     @map("total_price") @db.Decimal(10, 2)
-  userId        String      @unique @map("user_id") @db.Uuid
+  userId        String      @map("user_id") @db.Uuid
   user          User        @relation(fields: [userId], references: [id])
-  address       String
+  address       String?
   createdAt     DateTime    @default(now()) @map("created_at")
 
   orderItem          OrderItem[]
@@ -39,13 +38,9 @@ model OrderStatusHistory {
 }
 
 enum OrderStatus {
-  PAYMENT_PENDING
   CANCELED
-  PAID
+  WAITING_CONFIRMATION
   PRINTING
   SHIPPED
   DELIVERED
-  RETURN_REQUESTED
-  RETURN_APPROVED
-  RETURNED
 }

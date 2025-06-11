@@ -6,7 +6,8 @@ export const HttpMethod = {
   GET: "get" as HttpMethod,
   POST: "post" as HttpMethod,
   PUT: "put" as HttpMethod,
-  DELETE: "delete" as HttpMethod
+  DELETE: "delete" as HttpMethod,
+  PATCH: "patch" as HttpMethod
 } as const;
 
 export type ExpressHandler = (req: Request, res: Response, next: NextFunction) => any;

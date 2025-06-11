@@ -27,31 +27,41 @@ import { ListCategoriesUseCase } from "./usecases/product/list-categories.usecas
 import { ListProductsUseCase } from "./usecases/product/list-products.usecase";
 import { UpdateProductUsecase } from "./usecases/product/update-product.usecase";
 import { CreateCustomerAccountUseCase } from "./usecases/user/create-customer-account.usecase";
+import { OrderRepository } from "./infra/repositories/order/order.repository";
+import { CreateOrderUsecase } from "./usecases/order/create-order.usecase";
+import { CreateOrderRoute } from "./infra/api/express/routes/order/create-order-express.route";
+import { ListOrdersRoute } from "./infra/api/express/routes/order/list-orders-express.route";
+import { ListOrdersUsecase } from "./usecases/order/list-order.usecase";
+import { UpdateOrderAdminUsecase } from "./usecases/order/update-order-admin.usecase";
+import { UpdateOrderAdminRoute } from "./infra/api/express/routes/order/update-order-admin-express.route";
 
 function main() {
   const productRepository = ProductRepository.create(prisma);
   const userRepository = UserRepository.create(prisma);
   const categoryRepository = CategoryRepository.create(prisma);
+  const orderRepository = OrderRepository.create(prisma);
 
   const fileStorage = new AWSSimpleStorageService();
   const tokenService = new JwtTokenService();
-
+  const createOrderUsecase = CreateOrderUsecase.create(orderRepository);
   const createProductUsecase = CreateProductUsecase.create(productRepository, fileStorage);
   const updateProductUsecase = UpdateProductUsecase.create(productRepository, fileStorage);
   const deleteProductUsecase = DeleteProductUsecase.create(productRepository, fileStorage);
+  const updateOrderAdminUsecase = UpdateOrderAdminUsecase.create(orderRepository);
   const createCustomerAccountUseCase = CreateCustomerAccountUseCase.create(userRepository);
   const loginUseCase = LoginUseCase.create(userRepository, tokenService);
   const refreshTokenUseCase = RefreshTokenUseCase.create(tokenService);
   const listProductsUseCase = ListProductsUseCase.create(productRepository);
   const getProductByIdUseCase = GetProductByIdUseCase.create(productRepository);
   const listCategoriesUseCase = ListCategoriesUseCase.create(categoryRepository);
-
+  const listOrdersUsecase = ListOrdersUsecase.create(orderRepository);
   const findUserByIdUseCase = FindUserByIdUseCase.create(userRepository);
   const getUserDataRoute = GetUserDataRoute.create(findUserByIdUseCase, tokenService);
 
   const createCategoryUseCase = CreateCategoryUseCase.create(categoryRepository);
   const createCategoryRoute = CreateCategoryRoute.create(createCategoryUseCase, tokenService);
-
+  
+  const listOrdersRoute = ListOrdersRoute.create(listOrdersUsecase);
   const createProductRoute = CreateProductRoute.create(createProductUsecase);
   const updateProductRoute = UpdateProductRoute.create(updateProductUsecase);
   const deleteProductRoute = DeleteProductRoute.create(deleteProductUsecase);
@@ -61,6 +71,8 @@ function main() {
   const listProductsRoute = ListProductsRoute.create(listProductsUseCase);
   const getProductByIdRoute = GetProductByIdRoute.create(getProductByIdUseCase);
   const listCategoriesRoute = ListCategoriesRoute.create(listCategoriesUseCase);
+  const createOrderRoute = CreateOrderRoute.create(createOrderUsecase);
+  const updateOrderAdminRoute = UpdateOrderAdminRoute.create(updateOrderAdminUsecase);
 
   const api = ApiExpress.create([
     createProductRoute,
@@ -73,7 +85,10 @@ function main() {
     getProductByIdRoute,
     listCategoriesRoute,
     getUserDataRoute,
-    createCategoryRoute
+    createCategoryRoute,
+    createOrderRoute,
+    listOrdersRoute,
+    updateOrderAdminRoute
   ]);
 
   const port = 8000;
