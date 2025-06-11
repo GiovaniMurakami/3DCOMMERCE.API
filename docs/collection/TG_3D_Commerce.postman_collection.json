@@ -540,6 +540,180 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "create order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3M2ZkODk2ZC01Y2U1LTRkYmQtOThmZC1hODdjOGJlMjgzZmUiLCJ1c2VyUm9sZSI6IkFETUlOIiwiaWF0IjoxNzQ5NjAyOTM0LCJleHAiOjE3NDk2MDY1MzR9.sP1IQJrn207QhiLPIDO7d_dsNJxbhTgSCgRqIcvjW_I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"items\": [\r\n    {\r\n      \"productId\": \"e401d90f-1d23-4173-9811-d95368a8ac99\",\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"productId\": \"27eebd32-8505-4576-9e50-e522848afbe9\",\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patch order price",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3M2ZkODk2ZC01Y2U1LTRkYmQtOThmZC1hODdjOGJlMjgzZmUiLCJ1c2VyUm9sZSI6IkFETUlOIiwiaWF0IjoxNzQ5NjA2NTQ4LCJleHAiOjE3NDk2MTAxNDh9.Qb-G48E2q1sBJ4nxrZ5ihZxyyCTp93COu0WEDzH8Bl0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n              \"items\": [\r\n                {\r\n                    \"price\": \"5555\",\r\n                    \"orderItemId\": \"20be7c7a-51bb-4bbb-bd00-ef898d59049e\"\r\n                },\r\n                {\r\n                    \"price\": \"13\",\r\n                    \"orderItemId\": \"53340d4c-a9b2-4bc8-a5db-63128a5aee9f\"\r\n                }\r\n            ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/orders/:orderId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "2a22247c-ec79-4739-b790-16e2266dd830"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patch status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3M2ZkODk2ZC01Y2U1LTRkYmQtOThmZC1hODdjOGJlMjgzZmUiLCJ1c2VyUm9sZSI6IkFETUlOIiwiaWF0IjoxNzQ5NjA2NTQ4LCJleHAiOjE3NDk2MTAxNDh9.Qb-G48E2q1sBJ4nxrZ5ihZxyyCTp93COu0WEDzH8Bl0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"SHIPPED\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/orders/:orderId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "2a22247c-ec79-4739-b790-16e2266dd830"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get orders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3M2ZkODk2ZC01Y2U1LTRkYmQtOThmZC1hODdjOGJlMjgzZmUiLCJ1c2VyUm9sZSI6IkFETUlOIiwiaWF0IjoxNzQ5NjAyOTM0LCJleHAiOjE3NDk2MDY1MzR9.sP1IQJrn207QhiLPIDO7d_dsNJxbhTgSCgRqIcvjW_I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
