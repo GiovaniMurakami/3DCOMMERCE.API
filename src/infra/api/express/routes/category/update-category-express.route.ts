@@ -1,25 +1,22 @@
 import { Request, Response, NextFunction } from "express";
 import { HttpMethod, Route } from "../route";
-import { CreateCategoryUseCase } from "../../../../../usecases/category/create-category.usecase";
-import { JwtTokenService } from "../../../../services/auth/jwt-token.service";
+import { CategoryRepository } from "../../../../../infra/repositories/product/category.repository";
 import { authenticate } from "../../middlewares/token-authentication.middleware";
 import { authorizeRoles } from "../../middlewares/authorization.middleware";
 import { Role } from "@prisma/client";
 
-export class CreateCategoryRoute implements Route {
+export class UpdateCategoryRoute implements Route {
     private constructor(
         private readonly path: string,
         private readonly method: HttpMethod,
-        private readonly createCategoryUseCase: CreateCategoryUseCase,
-        private readonly tokenService: JwtTokenService
+        private readonly categoryRepository: CategoryRepository
     ) { }
 
-    public static create(createCategoryUseCase: CreateCategoryUseCase, tokenService: JwtTokenService) {
-        return new CreateCategoryRoute(
-            "/categories",
-            HttpMethod.POST,
-            createCategoryUseCase,
-            tokenService
+    public static create(categoryRepository: CategoryRepository) {
+        return new UpdateCategoryRoute(
+            "/categories/:id",
+            HttpMethod.PUT,
+            categoryRepository
         );
     }
 
@@ -29,10 +26,14 @@ export class CreateCategoryRoute implements Route {
             authorizeRoles(Role.ADMIN),
             async (request: Request, response: Response, next: NextFunction) => {
                 try {
+                    const { id } = request.params;
                     const { name } = request.body;
-                    const userRole = (request as any).tokenPayload.userRole;
-                    const category = await this.createCategoryUseCase.execute({ name, userRole });
-                    response.status(201).json(category);
+                    const category = await this.categoryRepository.findById(id);
+                    if (!category) {
+                        return response.status(404).json({ message: "Categoria não encontrada." });
+                    }
+                    await this.categoryRepository.update(id, name);
+                    response.status(200).json({ message: "Categoria atualizada com sucesso." });
                 } catch (err) {
                     next(err);
                 }
