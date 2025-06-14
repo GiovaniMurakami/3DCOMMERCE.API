@@ -110,7 +110,6 @@ export class OrderTransactionClient {
       data: {
         id,
         userId: params.userId,
-        address: params.address,
         currentStatus: params.currentStatus,
         orderItem: {
           create: params.items.map((item) => ({

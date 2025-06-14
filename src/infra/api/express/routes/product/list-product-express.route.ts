@@ -23,7 +23,7 @@ export class ListProductsRoute implements Route {
       expressValidatorHandler,
       async (req: Request, res: Response) => {
         const page = parseInt(req.query.page as string) || 1;
-        const limit = parseInt(req.query.limit as string) || 10;
+        const limit = parseInt(req.query.limit as string) || 12;
         const name = req.query.name as string | undefined;
         const categoryId = req.query.categoryId as string | undefined;
         const categoryName = req.query.categoryName as string | undefined;

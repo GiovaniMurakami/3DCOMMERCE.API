@@ -32,22 +32,13 @@ export class CreateCustomerAccountUseCase implements Usecase<CreateCustomerAccou
   public async execute(createCustomerAccountInputDto: CreateCustomerAccountInputDto) {
     const userId = randomUUID();
     const passwordHash = await generatePasswordHash(createCustomerAccountInputDto.password);
-    const customerProfile = new CustomerProfile(
-      randomUUID(),
-      userId,
-      createCustomerAccountInputDto.customerProfile.address,
-      createCustomerAccountInputDto.customerProfile.city
-    );
 
     const userEntity: User = new User(
       userId,
       createCustomerAccountInputDto.email,
       createCustomerAccountInputDto.fullName,
-      createCustomerAccountInputDto.cpf,
-      createCustomerAccountInputDto.phone,
       Role.CUSTOMER,
-      passwordHash,
-      customerProfile
+      passwordHash
     );
     await this.userRepository.save(userEntity);
     return this.presentOutput(userEntity);

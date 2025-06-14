@@ -25,7 +25,6 @@ export class CreateOrderRoute implements Route {
           const userId = (request as any).tokenPayload.userId;
           const input: CreateOrderInputDto = {
             userId,
-            address: request.body.address,
             items: request.body.items,
           };
 

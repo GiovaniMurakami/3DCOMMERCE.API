@@ -14,8 +14,6 @@ export class UserRepository {
         id: user.id,
         email: user.email,
         fullName: user.fullName,
-        cpf: user.cpf,
-        phone: user.phone,
         role: user.role,
         customerProfile: user.customerProfile
           ? {
@@ -57,11 +55,8 @@ export class UserRepository {
       user.id,
       user.email,
       user.fullName,
-      user.cpf,
-      user.phone,
       user.role,
-      user.password,
-      customerProfile
+      user.password
     );
   }
 
@@ -88,11 +83,9 @@ export class UserRepository {
       user.id,
       user.email,
       user.fullName,
-      user.cpf,
-      user.phone,
       user.role,
-      user.password,
-      customerProfile
+      user.password
+    
     );
   }
 }
