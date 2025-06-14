@@ -22,24 +22,19 @@ export class UpdateProductUsecase implements Usecase<UpdateProductInputDto, void
   private constructor(
     private readonly productRepository: ProductRepository,
     private readonly storageGateway: StorageGateway
-  ) {}
+  ) { }
 
   public static create(productRepository: ProductRepository, storageGateway: StorageGateway) {
     return new UpdateProductUsecase(productRepository, storageGateway);
   }
 
   public async execute(input: UpdateProductInputDto): Promise<void> {
-    this.validateMainImage(input.images);
+    if (input.images.length > 0) {
+      this.validateMainImage(input.images);
+    }
 
     const existing = await this.productRepository.findById(input.id);
     if (!existing) throw new Error("Product not found");
-
-    const updatedImages: ProductImage[] = input.images.map((img) => ({
-      id: randomUUID(),
-      url: "",
-      type: img.type,
-      productId: input.id,
-    }));
 
     await this.productRepository.runInTransaction(async (tx) => {
       await this.productRepository.update(input.id, {
@@ -54,12 +49,22 @@ export class UpdateProductUsecase implements Usecase<UpdateProductInputDto, void
         await this.productRepository.updateModelUrl(input.id, modelUrl);
       }
 
-      const imagesUrl = await this.storageGateway.saveProductImages(input.id, input.images);
-      updatedImages.forEach((img, i) => (img.url = imagesUrl[i]));
+      if (input.images.length > 0) {
+        const updatedImages: ProductImage[] = input.images.map((img) => ({
+          id: randomUUID(),
+          url: "",
+          type: img.type,
+          productId: input.id,
+        }));
 
-      await this.productRepository.replaceProductImages(input.id, updatedImages);
+        const imagesUrl = await this.storageGateway.saveProductImages(input.id, input.images);
+        updatedImages.forEach((img, i) => (img.url = imagesUrl[i]));
+
+        await this.productRepository.replaceProductImages(input.id, updatedImages);
+      }
     });
   }
+
 
   private validateMainImage(images: CreateProductImageInputDto[]) {
     const mainImagesCount = images.filter((img) => img.type.toLowerCase() === "main").length;
