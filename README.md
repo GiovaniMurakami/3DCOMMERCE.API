@@ -9,7 +9,7 @@
 
 - DATABASE_PASSWORD: Password set for the database when created via Docker Compose. Example: root
 
-- AWS_REGION: For the bucket location
+- AWS_BUCKET_REGION: For the bucket location
 
 - S3_IMAGE_BUCKET: Bucket for model images. Example: tg-model-image
 
