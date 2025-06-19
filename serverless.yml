@@ -1,0 +1,38 @@
+org: 3dcommerce
+app: ecommerce3d
+service: nodejs-aws-lambda
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  profile: default
+
+functions:
+  app:
+    handler: dist/main.handler
+    events:
+      - http: ANY /
+      - http: ANY /{proxy+}
+
+package:
+  individually: true
+  patterns:
+    - '!terraform/**'
+    - '!docs/**'
+    - '!.vscode/**'
+    - '!images/**'
+    - '!.env'
+    - '!.env.example'
+    - '!node_modules/.prisma/client/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'
+    - 'node_modules/.prisma/client/schema.prisma'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+
+
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: false
+    target: node18
+    platform: node

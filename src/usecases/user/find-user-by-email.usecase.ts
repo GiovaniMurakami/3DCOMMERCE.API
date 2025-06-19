@@ -12,8 +12,8 @@ export type FindUserOutputDto = {
   id: string;
   fullName: string;
   email: string;
-  cpf: string;
-  phone: string;
+  cpf?: string;
+  phone?: string;
   role: string;
   customerProfile?: {
     address: string;

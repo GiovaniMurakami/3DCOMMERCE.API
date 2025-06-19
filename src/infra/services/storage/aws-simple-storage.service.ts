@@ -11,7 +11,7 @@ export class AWSSimpleStorageService implements StorageGateway {
 
   constructor() {
     this.s3 = new S3Client({
-      region: process.env.AWS_REGION,
+      region: process.env.AWS_BUCKET_REGION,
     });
   }
 
