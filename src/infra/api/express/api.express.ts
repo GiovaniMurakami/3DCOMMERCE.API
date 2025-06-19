@@ -6,7 +6,7 @@ import cors from "cors";
 import { errorHandler } from "./middlewares/error-handler.middleware";
 
 export class ApiExpress implements Api {
-  private app: Express;
+  public app: Express;
 
   private constructor(routes: Route[]) {
     this.app = express();

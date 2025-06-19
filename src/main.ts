@@ -37,8 +37,9 @@ import { ListOrdersRoute } from "./infra/api/express/routes/order/list-orders-ex
 import { ListOrdersUsecase } from "./usecases/order/list-order.usecase";
 import { UpdateOrderAdminUsecase } from "./usecases/order/update-order-admin.usecase";
 import { UpdateOrderAdminRoute } from "./infra/api/express/routes/order/update-order-admin-express.route";
+import serverless from 'serverless-http';
 
-function main() {
+
   const productRepository = ProductRepository.create(prisma);
   const userRepository = UserRepository.create(prisma);
   const categoryRepository = CategoryRepository.create(prisma);
@@ -100,7 +101,6 @@ function main() {
   ]);
 
   const port = 8000;
-  api.start(port);
-}
 
-main();
+
+export const handler = serverless(api.app);
