@@ -36,3 +36,6 @@ build:
     sourcemap: false
     target: node18
     platform: node
+
+plugins:
+  - serverless-offline
