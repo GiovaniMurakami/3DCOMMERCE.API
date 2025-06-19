@@ -1,6 +1,7 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["prismaSchemaFolder"]
+  // Precisei adicionar no deploy, talvez dê problema ao executar localmente. Ai podemos procurar uma solução, ou só remover pra rodar local
   binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
