@@ -48,7 +48,7 @@ export class CreateProductRoute implements Route {
             images,
             userId: (request as any).tokenPayload.userId
           };
-
+          // test
           const output: CreateProductOutputDto = await this.createProductService.execute(input);
           const responseBody = this.present(output);
           response.status(201).json(responseBody);

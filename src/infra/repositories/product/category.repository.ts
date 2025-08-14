@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { CategoryDto } from "../../api/dto/category.dto";
+import { randomUUID } from "crypto";
 
 export class CategoryRepository {
   private constructor(private readonly prismaClient: PrismaClient) { }
@@ -11,7 +12,7 @@ export class CategoryRepository {
   async create(name: string): Promise<CategoryDto> {
     const category = await this.prismaClient.category.create({
       data: {
-        id: crypto.randomUUID(),
+        id: randomUUID(),
         name
       }
     });
